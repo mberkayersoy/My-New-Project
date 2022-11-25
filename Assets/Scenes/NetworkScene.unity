@@ -205,7 +205,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2811392}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 378422145}
+        m_TargetAssemblyTypeName: NetworkManagement, Assembly-CSharp
+        m_MethodName: Disconnect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2811392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -728,7 +740,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 836339573}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 378422145}
+        m_TargetAssemblyTypeName: NetworkManagement, Assembly-CSharp
+        m_MethodName: GetPing
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &836339573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -849,7 +873,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 917365222}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 378422145}
+        m_TargetAssemblyTypeName: NetworkManagement, Assembly-CSharp
+        m_MethodName: StatisticsReset
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &917365222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -945,7 +981,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Connect
+  m_text: Disconnect
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1104,7 +1140,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1077133881}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 378422145}
+        m_TargetAssemblyTypeName: NetworkManagement, Assembly-CSharp
+        m_MethodName: StatisticsReport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1077133881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1586,7 +1634,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1420635507}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 378422145}
+        m_TargetAssemblyTypeName: NetworkManagement, Assembly-CSharp
+        m_MethodName: Reconnect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1420635507
 MonoBehaviour:
   m_ObjectHideFlags: 0
