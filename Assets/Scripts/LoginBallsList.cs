@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 public class LoginBallsList : MonoBehaviour
 {
@@ -13,11 +14,13 @@ public class LoginBallsList : MonoBehaviour
 
     void Start()
     {
+        DOTween.Init();
         //timeColor = new Color(r, g, b, a);
         //headLine.color = timeColor;
         foreach (Transform child in transform)
         {
             child.GetComponent<Renderer>().material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+            child.GetComponent<MeshRenderer>().enabled = true;
             bubbles.Add(child.gameObject);
 
         }
@@ -25,6 +28,6 @@ public class LoginBallsList : MonoBehaviour
 
     void Update()
     {
-         
+        //headLine.DOColor(new Color2(Color.white, Color.white), new Color2(Color.green, Color.black), 1);
     }
 }
