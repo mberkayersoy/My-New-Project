@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
+using Photon.Pun;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -111,6 +112,7 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+        PhotonView pw;
 
         private bool IsCurrentDeviceMouse
         {
@@ -136,6 +138,7 @@ namespace StarterAssets
 
         private void Start()
         {
+            pw = GetComponent<PhotonView>();
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
@@ -156,15 +159,23 @@ namespace StarterAssets
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
+            if (pw.IsMine)
+            {
+                _hasAnimator = TryGetComponent(out _animator);
 
-            JumpAndGravity();
-            GroundedCheck();
-            Move();
+                JumpAndGravity();
+                GroundedCheck();
+                Move();
+            }
+
         }
         private void LateUpdate()
         {
-            CameraRotation();
+            if (pw.IsMine)
+            {
+                CameraRotation();
+            }
+
         }
 
         private void AssignAnimationIDs()

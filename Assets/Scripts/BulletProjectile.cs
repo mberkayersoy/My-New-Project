@@ -27,10 +27,10 @@ public class BulletProjectile : MonoBehaviour
         //    other.GetComponent<Ball>().Split();
         //}
         //Destroy(gameObject);
-        if (other.gameObject.tag == "Ball")
+        if (other.gameObject.CompareTag("Ball"))
         {
             // hit target
-            other.GetComponent<Ball>().Split(1);
+            other.GetComponent<Ball>().Split(2);
             Instantiate(vfxHitGreen, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }

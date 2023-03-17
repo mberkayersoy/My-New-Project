@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
     public TextMeshProUGUI countDownText;
-    float currCountdownValue;
+    public GameObject door;
     private void Awake()
     {
         if (Instance)
@@ -20,30 +20,9 @@ public class UIManager : MonoBehaviour
     }
 
     public List<TextMeshProUGUI> teamScores; 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        StartCoroutine(StartCountdown());
-    }
-
-    // Update is called once per frame
     void Update()
     {
         ScoreDisplay();
-    }
-
-    public IEnumerator StartCountdown(float countdownValue = 5)
-    {
-        currCountdownValue = countdownValue;
-        while (currCountdownValue > 0)
-        {
-            countDownText.text = currCountdownValue.ToString();
-            yield return new WaitForSeconds(1.0f);
-            currCountdownValue--;
-        }
-        countDownText.text = "SHOOT";
-        StartCoroutine(DisplayEnabled());
     }
     public IEnumerator DisplayEnabled()
     {

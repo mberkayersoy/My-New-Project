@@ -11,7 +11,7 @@ public class Ball : MonoBehaviour
     {
         var randomVector = Random.insideUnitSphere * 35f;
         rb = GetComponent<Rigidbody>();
-        //rb.AddForce(randomVector, ForceMode.Impulse);
+        rb.AddForce(randomVector, ForceMode.Impulse);
     }
     public void Split(int team)
     {
@@ -19,8 +19,6 @@ public class Ball : MonoBehaviour
         var randomVector2 = Random.insideUnitSphere * 8f;
         GameObject ball1;
         GameObject ball2;
-
-        string ballName = "Ball" + nextBallID;
 
         if (nextBall != null)
         {

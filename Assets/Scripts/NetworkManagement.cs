@@ -1,14 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class NetworkManagement : MonoBehaviourPunCallbacks
 {
-    public TextMeshProUGUI logText;
-    
+    //public TMP_InputField emailInput;
+    //public TMP_InputField passwordInput;
+
+    //string emaill = "qwe";
+    //string pass = "123";
     void Start()
     {
         /*Action priority
@@ -35,14 +40,6 @@ public class NetworkManagement : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            PhotonNetwork.LeaveRoom();
-        }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            PhotonNetwork.LeaveLobby();
-        }
 
         //if (PhotonNetwork.IsConnected)
         //{
@@ -121,15 +118,17 @@ public class NetworkManagement : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         GetLog("Player joined a room...");
+
+        PhotonNetwork.Instantiate("Player2", Vector3.zero, Quaternion.identity);
         //Debug.Log(PhotonNetwork.LocalPlayer.NickName);
         //Debug.Log(PhotonNetwork.CountOfPlayers);
         //Debug.Log(PhotonNetwork.CountOfRooms);
         //Debug.Log(PhotonNetwork.CountOfPlayersInRooms);
         //Debug.Log(PhotonNetwork.CountOfPlayersOnMaster);
 
-        Debug.Log(PhotonNetwork.CurrentRoom);
-        Debug.Log(PhotonNetwork.CurrentLobby);
-        Debug.Log(PhotonNetwork.CloudRegion);
+        //Debug.Log(PhotonNetwork.CurrentRoom);
+        //Debug.Log(PhotonNetwork.CurrentLobby);
+        //Debug.Log(PhotonNetwork.CloudRegion);
     }
 
     public override void OnLeftLobby()
@@ -162,7 +161,8 @@ public class NetworkManagement : MonoBehaviourPunCallbacks
 
     void GetLog(string text)
     {
-        logText.text = text;
+        //logText.text = text;
+        Debug.Log(text);
     }
 
     public void Disconnect()
@@ -190,4 +190,15 @@ public class NetworkManagement : MonoBehaviourPunCallbacks
     {
         GetLog(PhotonNetwork.GetPing().ToString());
     }
+
+    //public void LogIn()
+    //{
+    //    PhotonNetwork.NickName = emailInput.text;
+
+    //    if (emailInput.text == emaill && passwordInput.text == pass)
+    //    {
+    //        SceneManager.LoadScene("Home");
+    //    }
+        
+    //}
 }
