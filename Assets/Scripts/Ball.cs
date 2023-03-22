@@ -6,75 +6,51 @@ public class Ball : MonoBehaviour
 {
     public GameObject nextBall;
     public int nextBallID;
-    [SerializeField] private Rigidbody rb;
-    void Start()
+    private Rigidbody rb;
+    private void Awake()
     {
-        var randomVector = Random.insideUnitSphere * 35f;
         rb = GetComponent<Rigidbody>();
+    }
+
+    public void MoveTheBall()
+    {
+        gameObject.SetActive(true);
+        rb.isKinematic = false;
+        var randomVector = Random.insideUnitSphere * 25f;
         rb.AddForce(randomVector, ForceMode.Impulse);
     }
-    public void Split(int team)
+    public void Split(RaycastWeapon raycastWeapon, Vector3 rayOrigin)
     {
-        var randomVector1 = Random.insideUnitSphere * 8f;
-        var randomVector2 = Random.insideUnitSphere * 8f;
-        GameObject ball1;
-        GameObject ball2;
+        Vector3 forces = rayOrigin.normalized * 30;
+        rb.AddForce(-forces, ForceMode.Impulse);
 
+        //Debug.DrawLine(rb.position, rb.velocity + transform.position, Color.black, 2.0f);
+        //Debug.DrawLine(transform.position, Quaternion.Euler(45, 45, 45) * rb.velocity + transform.position, Color.red, 2.0f);
+        //Debug.DrawLine(transform.position, Quaternion.Euler(-45, -45, -45) * rb.velocity + transform.position, Color.blue, 2.0f);
         if (nextBall != null)
         {
-            switch (team)
-            {
-                case 0:
-                    ScoreBoard.Instance.SetScore(team, transform.localScale.x);
-                    ball1 = Instantiate(nextBall, rb.position + Vector3.right / 4f, Quaternion.identity);
-                    ball1.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
-                    ball2 = Instantiate(nextBall, rb.position + Vector3.left / 4f, Quaternion.identity);
-                    ball2.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
-                    ball1.GetComponent<Ball>().GetComponent<Rigidbody>().AddForce(randomVector1, ForceMode.Impulse);
-                    ball2.GetComponent<Ball>().GetComponent<Rigidbody>().AddForce(randomVector2, ForceMode.Impulse);
-                    nextBallID++;
-                    break;
-
-                case 1:
-                    ScoreBoard.Instance.SetScore(team, transform.localScale.x);
-                    ball1 = Instantiate(nextBall, rb.position + Vector3.right / 4f, Quaternion.identity);
-                    ball1.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
-                    ball2 = Instantiate(nextBall, rb.position + Vector3.left / 4f, Quaternion.identity);
-                    ball2.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
-                    ball1.GetComponent<Ball>().GetComponent<Rigidbody>().AddForce(randomVector1, ForceMode.Impulse);
-                    ball2.GetComponent<Ball>().GetComponent<Rigidbody>().AddForce(randomVector2, ForceMode.Impulse);
-                    nextBallID++;
-                    break;
-
-                case 2:
-                    ScoreBoard.Instance.SetScore(team, transform.localScale.x);
-                    ball1 = Instantiate(nextBall, rb.position + Vector3.right / 4f, Quaternion.identity);
-                    ball1.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
-                    ball2 = Instantiate(nextBall, rb.position + Vector3.left / 4f, Quaternion.identity);
-                    ball2.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
-                    ball1.GetComponent<Ball>().GetComponent<Rigidbody>().AddForce(randomVector1, ForceMode.Impulse);
-                    ball2.GetComponent<Ball>().GetComponent<Rigidbody>().AddForce(randomVector2, ForceMode.Impulse);
-                    nextBallID++;
-                    break;
-
-                case 3:
-                    ScoreBoard.Instance.SetScore(team, transform.localScale.x);
-                    ball1 = Instantiate(nextBall, rb.position + Vector3.right / 4f, Quaternion.identity);
-                    ball1.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
-                    ball2 = Instantiate(nextBall, rb.position + Vector3.left / 4f, Quaternion.identity);
-                    ball2.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
-                    ball1.GetComponent<Ball>().GetComponent<Rigidbody>().AddForce(randomVector1, ForceMode.Impulse);
-                    ball2.GetComponent<Ball>().GetComponent<Rigidbody>().AddForce(randomVector2, ForceMode.Impulse);
-                    nextBallID++;
-                    break;
-            }
+            GenerateBallChilds((TeamID)raycastWeapon.teamNumber);
         }
+        GameManager.Instance.RemoveBallList(gameObject.GetComponent<Ball>());
         Destroy(gameObject);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void GenerateBallChilds(TeamID teamID)
     {
-        //Debug.Log(collision.gameObject.name);
+        GameObject ball1;
+        GameObject ball2;
+        ScoreBoard.Instance.SetScore(teamID, transform.localScale.x);
+        ball1 = Instantiate(nextBall, rb.position + new Vector3((transform.localScale.x / 4), 0, 0), Quaternion.identity);
+        ball1.GetComponent<MeshRenderer>().material.SetColor("_Color", TeamColor.GetTeamColor(teamID));
+        ball2 = Instantiate(nextBall, rb.position + new Vector3(0, 0, (transform.localScale.x / 4)), Quaternion.identity);
+        ball2.GetComponent<MeshRenderer>().material.SetColor("_Color", TeamColor.GetTeamColor(teamID));
+        ball1.GetComponent<Ball>().GetComponent<Rigidbody>().velocity = Quaternion.Euler(30, 30, 30) * rb.velocity;
+        ball2.GetComponent<Ball>().GetComponent<Rigidbody>().velocity = Quaternion.Euler(-30, -30, -30) * rb.velocity;
+        GameManager.Instance.AddBallList(ball1.GetComponent<Ball>(), ball2.GetComponent<Ball>());
+        nextBallID++;
     }
-
+    //private void Update()
+    //{
+    //    Debug.DrawLine(rb.position, rb.velocity + transform.position, Color.green, 0.1f);
+    //}
 }

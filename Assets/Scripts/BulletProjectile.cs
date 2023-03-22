@@ -30,7 +30,7 @@ public class BulletProjectile : MonoBehaviour
         if (other.gameObject.CompareTag("Ball"))
         {
             // hit target
-            other.GetComponent<Ball>().Split(2);
+            //other.GetComponent<Ball>().Split(2);
             Instantiate(vfxHitGreen, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }

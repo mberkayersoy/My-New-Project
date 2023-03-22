@@ -7,8 +7,6 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
-    public TextMeshProUGUI countDownText;
-    public GameObject door;
     private void Awake()
     {
         if (Instance)
@@ -19,26 +17,41 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
-    public List<TextMeshProUGUI> teamScores; 
-    void Update()
+    public List<TextMeshProUGUI> teamScores;
+    public TextMeshProUGUI startCountDownText;
+    int startCountDown = 2;
+
+    private void Start()
     {
+
+        StartCoroutine(CountDownDisplay());
         ScoreDisplay();
     }
-    public IEnumerator DisplayEnabled()
+
+    IEnumerator CountDownDisplay()
     {
-        yield return new WaitForSeconds(1.0f);
-        countDownText.enabled = false;
+        for (int i = startCountDown; i > 0; i--)
+        {
+            startCountDownText.text = i.ToString();
+            yield return new WaitForSeconds(1f);
+        }
+        startCountDownText.text = "GO!";
+
+        GameManager.Instance.StartTheGame();
+        StartCoroutine(CleanUI());
     }
 
-    private void ScoreDisplay()
+    IEnumerator CleanUI()
+    {
+        yield return new WaitForSeconds(1f);
+        startCountDownText.text = "";
+    }
+    public void ScoreDisplay()
     {
         teamScores[0].text = "Blue: " + ScoreBoard.Instance.blueScore;
         teamScores[1].text = "Red: " + ScoreBoard.Instance.redScore;
-        teamScores[2].text = "Yellow: " + ScoreBoard.Instance.yellowScore;
-        teamScores[3].text = "Green: " + ScoreBoard.Instance.greenScore;
+        teamScores[2].text = "Green: " + ScoreBoard.Instance.greenScore;
+        teamScores[3].text = "Yellow: " + ScoreBoard.Instance.yellowScore;
+
     }
-
-
-
-
 }

@@ -21,7 +21,7 @@ public class ScoreBoard : MonoBehaviour
     public float greenScore;
     public float scoreMult;
 
-    public void SetScore(int teamID, float ballScale)
+    public void SetScore(TeamID teamID, float ballScale)
     {
         switch (teamID)
         {
@@ -29,17 +29,19 @@ public class ScoreBoard : MonoBehaviour
                 blueScore += (int)(scoreMult * (1 / ballScale));
                 break;
 
-            case 1:
+            case (TeamID)1:
                 redScore += (int)(scoreMult * (1 / ballScale));
                 break;
 
-            case 2:
+            case (TeamID)2:
                 yellowScore += (int)(scoreMult * (1 / ballScale));
                 break;
 
-            case 3:
+            case (TeamID)3:
                 greenScore += (int)(scoreMult * (1 / ballScale));
                 break;
         }
+        UIManager.Instance.ScoreDisplay();
+
     }
 }
