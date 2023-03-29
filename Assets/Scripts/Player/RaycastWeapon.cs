@@ -46,6 +46,7 @@ public class RaycastWeapon : MonoBehaviour
             if (hitInfo.transform.CompareTag("Ball"))
             {
                 hitInfo.transform.GetComponent<Ball>().Split(this, ray.origin);
+                Debug.Log(hitInfo.distance);
             }
         }
    

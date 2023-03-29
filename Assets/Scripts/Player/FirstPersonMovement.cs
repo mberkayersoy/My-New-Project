@@ -3,29 +3,39 @@ using UnityEngine;
 
 public class FirstPersonMovement : MonoBehaviour
 {
-    public float speed = 5;
-
+    public Player player;
     [Header("Running")]
     public bool canRun = true;
+    public event System.Action Jumped;
+
+    [SerializeField, Tooltip("Prevents jumping when the transform is in mid-air.")]
+    GroundCheck groundCheck;
     public bool IsRunning { get; private set; }
     public float runSpeed = 9;
     public KeyCode runningKey = KeyCode.LeftShift;
-    new Rigidbody rigidbody;
+    new Rigidbody rb;
     /// <summary> Functions to override movement speed. Will use the last added override. </summary>
     public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
-    void Awake()
+    private void Start()
     {
         // Get the rigidbody on this.
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
+        player = GetComponent<Player>();
+        groundCheck = GetComponentInChildren<GroundCheck>();
+    }
+    void FixedUpdate()
+    {
+        Run();
+        Jump();
     }
 
-    void FixedUpdate()
+    private void Run()
     {
         // Update IsRunning from input.
         IsRunning = canRun && Input.GetKey(runningKey);
 
         // Get targetMovingSpeed.
-        float targetMovingSpeed = IsRunning ? runSpeed : speed;
+        float targetMovingSpeed = IsRunning ? runSpeed : player.speedForce;
         if (speedOverrides.Count > 0)
         {
             targetMovingSpeed = speedOverrides[speedOverrides.Count - 1]();
@@ -35,7 +45,18 @@ public class FirstPersonMovement : MonoBehaviour
         Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);
 
         // Apply movement.
-        rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y);
+        rb.velocity = transform.rotation * new Vector3(targetVelocity.x, rb.velocity.y, targetVelocity.y);
+    }
+
+    void Jump()
+    {
+        // Jump when the Jump button is pressed and we are on the ground.
+        if (Input.GetButtonDown("Jump") && (!groundCheck || groundCheck.isGrounded))
+        {
+            Debug.Log("Jumped");
+            rb.AddForce(100 * player.jumpForce * Vector3.up);
+            Jumped?.Invoke();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -46,5 +67,6 @@ public class FirstPersonMovement : MonoBehaviour
             GameManager.Instance.RespawnPlayer(this.gameObject, ballColor);
         }
     }
+
 
 }

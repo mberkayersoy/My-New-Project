@@ -53,5 +53,6 @@ public class UIManager : MonoBehaviour
         teamScores[2].text = "Green: " + ScoreBoard.Instance.greenScore;
         teamScores[3].text = "Yellow: " + ScoreBoard.Instance.yellowScore;
 
+
     }
 }

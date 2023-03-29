@@ -84,14 +84,10 @@ public class GameManager : MonoBehaviour
     }
     public void GenerateAbility(Transform ballTransform)
     {
-        Instantiate(abilities[0], Vector3.up, Quaternion.identity);
+        int randomNumber = Random.Range(0, abilities.Count);
+        Instantiate(abilities[randomNumber], Vector3.up, Quaternion.identity);
+        //go.GetComponent<PickUpSpeed>().ability = new SpeedAbility();
     }
-    public void GiveAbilityToPlayer(GameObject player)
-    {
-        player.GetComponent<FirstPersonMovement>().speed += 50 ; 
-
-    }
-
 }
 
 public enum TeamID

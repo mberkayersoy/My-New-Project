@@ -3,27 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Ability : MonoBehaviour
+public abstract class Ability 
 {
-    public int teamID;
-    public float abilityTime;
+    public float abilityTime = 45f;
     public GameObject abilityPrefab;
+    protected Player owner;
 
+    public abstract void GiveAbility(Player player);
+    public abstract void TakeAbility();
 
-    public void GiveAbility(Ability ability)
-    {
-
-    }
-    // Start is called before the first frame update
-
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.CompareTag("Player"))
-    //    {
-    //        GameManager.Instance.GiveAbilityToPlayer(other.gameObject);
-    //        Debug.Log("Picked");
-    //        Destroy(gameObject);
-    //    }
-    //}
 }

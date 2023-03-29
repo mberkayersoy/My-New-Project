@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class SpeedAbility : Ability
+public class JumpAbility : Ability
 {
-    float increaseSpeed = 30;
+    float increaseJump = 10;
+
     //private void OnTriggerEnter(Collider other)
     //{
     //    if (other.CompareTag("Player"))
@@ -15,14 +16,15 @@ public class SpeedAbility : Ability
     //}
     public override void GiveAbility(Player player)
     {
+
         owner = player;
         owner.GetComponentInChildren<PersonalCanvas>().StartAbilityCountDown(abilityTime);
-        player.speedForce += increaseSpeed;
+        owner.jumpForce += increaseJump;
     }
 
     public override void TakeAbility()
     {
-        owner.speedForce -= increaseSpeed;
+        owner.jumpForce -= increaseJump;
         Debug.Log("Take");
     }
 }

@@ -34,11 +34,11 @@ public class ScoreBoard : MonoBehaviour
                 break;
 
             case (TeamID)2:
-                yellowScore += (int)(scoreMult * (1 / ballScale));
+                greenScore += (int)(scoreMult * (1 / ballScale));
                 break;
 
             case (TeamID)3:
-                greenScore += (int)(scoreMult * (1 / ballScale));
+                yellowScore += (int)(scoreMult * (1 / ballScale));
                 break;
         }
         UIManager.Instance.ScoreDisplay();
