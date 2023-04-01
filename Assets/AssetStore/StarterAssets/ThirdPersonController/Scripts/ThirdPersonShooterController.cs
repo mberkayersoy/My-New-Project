@@ -41,7 +41,7 @@ public class ThirdPersonShooterController : MonoBehaviour
             hitTransform = raycastHit.transform;
         }
 
-        if (starterAssetsInputs.aim)
+        /*if (starterAssetsInputs.aim)
         {
             aimVirtualCamera.gameObject.SetActive(true);
             thirdPersonController.SetSensitivity(aimSensitivity);
@@ -58,7 +58,7 @@ public class ThirdPersonShooterController : MonoBehaviour
             aimVirtualCamera.gameObject.SetActive(false);
             thirdPersonController.SetSensitivity(normalSensitivity);
             thirdPersonController.SetRotateOnMove(true);
-        }
+        }*/
 
         if (Input.GetButtonDown("Fire1"))
         {

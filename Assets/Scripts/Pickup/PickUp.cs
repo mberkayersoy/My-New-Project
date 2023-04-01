@@ -2,29 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AbilityType
-{
-    Speed,
-    Jump,
-}
 public class PickUp : MonoBehaviour
 {
-    public AbilityType type;
-    
+    public Ability ability;
 
+    private void Start()
+    {
+        GetComponent<Rigidbody>().AddForce(Vector3.down * 20f, ForceMode.Impulse);
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            other.GetComponent<Player>().SetAbility(ability);
             Destroy(gameObject);
-            if (type == AbilityType.Speed)
-            {
-                other.GetComponent<Player>().SetAbility(new SpeedAbility());
-            }
-            else if (type == AbilityType.Jump)
-            {
-                other.GetComponent<Player>().SetAbility(new JumpAbility());
-            }
         }
     }
 }

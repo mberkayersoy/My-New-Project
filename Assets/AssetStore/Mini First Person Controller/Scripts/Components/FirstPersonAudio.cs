@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FirstPersonAudio : MonoBehaviour
 {
-    public FirstPersonMovement character;
+    /*public FirstPersonMovement character;
     public GroundCheck groundCheck;
 
     [Header("Step")]
@@ -193,5 +193,5 @@ public class FirstPersonAudio : MonoBehaviour
         audio.clip = clip;
         audio.Play();
     }
-    #endregion 
+    #endregion */
 }

@@ -5,14 +5,21 @@ using Photon.Pun;
 
 public class RaycastWeapon : MonoBehaviour
 {
-    public bool isFiring = false;
+    [Header("VFX Variables")]
+
     public ParticleSystem[] muzzleFlash;
     public ParticleSystem hitEffect;
     public TrailRenderer tracerEffect;
+    public bool isFiring = false;
+
+    [Space]
+    
+    [Header("Tranform Variables")]
     public Transform raycastOrigin;
     public Transform raycastDestination;
-    public int teamNumber;
 
+
+    public int teamNumber;
     Ray ray;
     RaycastHit hitInfo;
 
@@ -46,7 +53,7 @@ public class RaycastWeapon : MonoBehaviour
             if (hitInfo.transform.CompareTag("Ball"))
             {
                 hitInfo.transform.GetComponent<Ball>().Split(this, ray.origin);
-                Debug.Log(hitInfo.distance);
+               // Debug.Log(hitInfo.distance);
             }
         }
    

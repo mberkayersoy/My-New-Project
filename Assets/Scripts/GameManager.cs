@@ -14,18 +14,22 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
     }
-    public float respawnTime = 5f;
+
     public GameObject[] spawnPoints;
     public GameObject[] playersList;
     public List<GameObject> abilities;
     public List<Ball> ballList;
     public Ball mainBall;
+    public float respawnTime = 5f;
+    public int abilityPercentage;
+    public bool isGameEnd = false;
 
     public void StartTheGame()
     {
         GivePlayerFullAccess(playersList);
         mainBall.MoveTheBall();
         ballList.Add(mainBall);
+        isGameEnd = false;
     }
     private void Start()
     {
@@ -39,63 +43,95 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RespawnPlayer(GameObject player, Color ballColor)
+    public void EditHitPlayers(GameObject player, TeamID ballTeamID)
     {
-        player.GetComponentInChildren<PersonalCanvas>().DeadSectionOn();
-        player.transform.position = spawnPoints[player.GetComponent<Player>().teamID].transform.position;
-        player.GetComponent<Rigidbody>().isKinematic = true;
-        player.GetComponent<Player>().isDead = true;
+        // Give points to the team that has the teamID of the ball that hit the player.
+        if (player.GetComponent<Player>().teamID != (int)ballTeamID)
+        {
+            ScoreBoard.Instance.SetScore(ballTeamID, 1);
+        }
+        // If the player is hit by the ball with his teamID, do nothing.
+        else
+        {
+            Debug.Log("Kendi topun vurdu seni");
+        }
+        //player.GetComponent<FirstPersonMovement>().ResetAnimator();
+         player.GetComponentInChildren<PersonalCanvas>().DeadSectionOn(); // Activate player dead canvas.
+        GeneratePlayers(player);
+        //player.transform.position = spawnPoints[player.GetComponent<Player>().teamID].transform.position + Vector3.up; // Relocate the player in Spawn.
+        //player.GetComponent<Player>().isDead = true;
         StartCoroutine(Respawn(player)); 
     }
 
+    // Allow dead characters to play again after waiting a respawnTime.
     IEnumerator Respawn(GameObject player)
     {
         yield return new WaitForSeconds(respawnTime);
-        player.GetComponent<Rigidbody>().isKinematic = false;
         player.GetComponent<Player>().isDead = false;
-        player.GetComponentInChildren<PersonalCanvas>().DeadSectionOff();
+        player.GetComponentInChildren<PersonalCanvas>().DeadSectionOff(); // Deactivate player dead canvas.
     }
 
+    // Execute before the game start.
     void GeneratePlayers(GameObject player) // Everybody spawn their base and dont move until game start.
     {
-        player.transform.position = spawnPoints[player.GetComponent<Player>().teamID].transform.position;
-        player.GetComponent<Rigidbody>().isKinematic = true;
+        player.transform.position = spawnPoints[player.GetComponent<Player>().teamID].transform.position + Vector3.up * 2;
         player.GetComponent<Player>().isDead = true;
     }
+
+    // Execute when the game start.
     void GivePlayerFullAccess(GameObject[] playersList)
     {
         foreach (var player in playersList)
         {
-            player.GetComponent<Rigidbody>().isKinematic = false;
             player.GetComponent<Player>().isDead = false;
         }
     }
 
+    // Add newly created balls to the ball list.
     public void AddBallList(Ball ball1, Ball ball2)
     {
         ballList.Add(ball1);
         ballList.Add(ball2);
     }
+
+    // The balls destroyed by the characters are removed from the ball list.
     public void RemoveBallList(Ball ball)
     {
         ballList.Remove(ball);
         GenerateAbility(ball.transform);
-
+        CheckGameEnd();
     }
+
+    // Create the ability balls in the game area.
     public void GenerateAbility(Transform ballTransform)
     {
-        int randomNumber = Random.Range(0, abilities.Count);
-        Instantiate(abilities[randomNumber], Vector3.up, Quaternion.identity);
-        //go.GetComponent<PickUpSpeed>().ability = new SpeedAbility();
+        int abilityPossibility = Random.Range(0, 101);
+
+        // Ability determines drop probability.
+        if (abilityPossibility < abilityPercentage)
+        {
+            int randomNumber = Random.Range(0, abilities.Count);
+            Instantiate(abilities[randomNumber], ballTransform.position, Quaternion.identity);
+            Debug.Log("ability falling");
+        }
+    }
+
+    public void CheckGameEnd()
+    {
+        if (ballList.Count <= 0)
+        {
+            isGameEnd = true;
+        }
     }
 }
 
 public enum TeamID
 {
-    BlueTeam = 0,
-    RedTeam = 1,
-    GreenTeam = 2,
-    YellowTeam = 3
+    Blue_Team = 0,
+    Red_Team = 1,
+    Green_Team = 2,
+    Yellow_Team = 3,
+    NoTeam = 4
 }
 public class TeamColor
 {
@@ -114,6 +150,6 @@ public class TeamColor
             default:
                 break;
         }
-        return Color.black;
+        return Color.white;
     }
 }

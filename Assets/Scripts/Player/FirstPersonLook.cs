@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Photon.Pun;
 public class FirstPersonLook : MonoBehaviour
 {
     [SerializeField]
@@ -7,16 +6,14 @@ public class FirstPersonLook : MonoBehaviour
     public Transform camPos;
     public float sensitivity = 2;
     public float smoothing = 1.5f;
+    public float camMinRot = -25f;
+    public float camMinRotOnAir = -40f;
+    public float camMaxRot = 50f;
     Vector2 velocity;
     Vector2 frameVelocity;
 
     private Vector3 velocityy = Vector3.zero;
 
-    void Reset()
-    {
-        // Get the character from the FirstPersonMovement in parents.
-        //character = GetComponentInParent<FirstPersonMovement>().transform;
-    }
 
     void Start()
     {
@@ -31,15 +28,23 @@ public class FirstPersonLook : MonoBehaviour
     }
     private void CamRotation()
     {
+        float targetCamMinRot;
+        if (!character.GetComponent<FirstPersonMovement>().Grounded)
+        {
+            targetCamMinRot = camMinRotOnAir;
+        }
+        else
+        {
+            targetCamMinRot = -25f;
+        }
+
+        camMinRot = Mathf.Lerp(camMinRot, targetCamMinRot, 0.1f);
         // Get smooth velocity.
         Vector2 mouseDelta = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
         Vector2 rawFrameVelocity = Vector2.Scale(mouseDelta, Vector2.one * sensitivity);
         frameVelocity = Vector2.Lerp(frameVelocity, rawFrameVelocity, 1 / smoothing);
         velocity += frameVelocity;
-        velocity.y = Mathf.Clamp(velocity.y, -70, 70);
-
-        // Rotate camera up-down and controller left-right from velocity.
-        //transform.localRotation = Quaternion.AngleAxis(-velocity.y, Vector3.right);
+        velocity.y = Mathf.Clamp(velocity.y, camMinRot, camMaxRot);
         character.localRotation = Quaternion.AngleAxis(velocity.x, Vector3.up);
         transform.rotation = Quaternion.Euler(-velocity.y, character.eulerAngles.y, 0);
     }
@@ -51,7 +56,7 @@ public class FirstPersonLook : MonoBehaviour
     void CamFollow()
     {
         Vector3 targetPosition = camPos.position;
-        targetPosition.y = transform.position.y;
+        //targetPosition.y = transform.position.y;
 
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocityy, 0);
 

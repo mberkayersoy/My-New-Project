@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ScoreBoard : MonoBehaviour
 {
-
     public static ScoreBoard Instance;
     private void Awake()
     {
@@ -15,33 +15,42 @@ public class ScoreBoard : MonoBehaviour
         }
         Instance = this;
     }
-    public float blueScore;
-    public float redScore;
-    public float yellowScore;
-    public float greenScore;
+
     public float scoreMult;
+    public Dictionary<TeamID, float> teamscores = new Dictionary<TeamID, float>
+    {
+        { TeamID.Blue_Team, 0 },
+        { TeamID.Red_Team, 0 },
+        { TeamID.Green_Team, 0 },
+        { TeamID.Yellow_Team, 0 },
+    };
 
     public void SetScore(TeamID teamID, float ballScale)
     {
-        switch (teamID)
+        teamscores[teamID] += (int)(scoreMult * (1 / ballScale));
+        UIManager.Instance.GameUISection.ScoreDisplay();
+
+        if (GameManager.Instance.isGameEnd)
         {
-            case 0:
-                blueScore += (int)(scoreMult * (1 / ballScale));
-                break;
-
-            case (TeamID)1:
-                redScore += (int)(scoreMult * (1 / ballScale));
-                break;
-
-            case (TeamID)2:
-                greenScore += (int)(scoreMult * (1 / ballScale));
-                break;
-
-            case (TeamID)3:
-                yellowScore += (int)(scoreMult * (1 / ballScale));
-                break;
+            GetWinners();
         }
-        UIManager.Instance.ScoreDisplay();
 
+    }
+
+    public TeamID GetWinners()
+    {
+        TeamID winningTeam = TeamID.Blue_Team;
+        float highestScore = teamscores[TeamID.Blue_Team];
+
+        foreach (KeyValuePair<TeamID, float> teamScore in teamscores)
+        {
+            if (teamScore.Value > highestScore)
+            {
+                highestScore = teamScore.Value;
+                winningTeam = teamScore.Key;
+            }
+        }
+
+        return winningTeam;
     }
 }

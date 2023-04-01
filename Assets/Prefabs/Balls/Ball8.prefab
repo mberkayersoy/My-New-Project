@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6552417054018105682}
   - component: {fileID: 9211931491655358686}
   m_Layer: 0
-  m_Name: Ball7
+  m_Name: Ball8
   m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 6945058542844640839}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 15, y: 15, z: 15}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -127,5 +127,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e552ebd98fa7665428fd2f27bc770d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextBall: {fileID: 6945058542844640839, guid: b0191ea8b77685445a99baacf14ad347, type: 3}
-  nextBallID: 8
+  nextBall: {fileID: 6945058542844640839, guid: 353e153a78b942e42810b93ac9f2eaa6, type: 3}
+  ballTeamID: 0
