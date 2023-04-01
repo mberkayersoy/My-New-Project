@@ -119,7 +119,7 @@ public class NetworkManagement : MonoBehaviourPunCallbacks
     {
         GetLog("Player joined a room...");
 
-        PhotonNetwork.Instantiate("Player2", Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate("Armature", Vector3.zero, Quaternion.identity);
         //Debug.Log(PhotonNetwork.LocalPlayer.NickName);
         //Debug.Log(PhotonNetwork.CountOfPlayers);
         //Debug.Log(PhotonNetwork.CountOfRooms);
