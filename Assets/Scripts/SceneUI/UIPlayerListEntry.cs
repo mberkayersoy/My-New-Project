@@ -97,12 +97,12 @@ public class UIPlayerListEntry : MonoBehaviour
         if (playerReady) 
         {
             PlayerReadyButton.image.color = Color.green;
-            PlayerReadyImage.enabled = true;
+            PlayerReadyImage.enabled = playerReady;
         }
         else
         {
             PlayerReadyButton.image.color = Color.red;
-            PlayerReadyImage.enabled = false;
+            PlayerReadyImage.enabled = playerReady;
         }
     }
 

@@ -8,15 +8,13 @@ public class LoginBallsList : MonoBehaviour
 {
     [SerializeField] List<GameObject> bubbles;
     [SerializeField] TextMeshProUGUI headLine;
-    Color currentColor;
-    //Color timeColor;
-    //float r = 0.2f, g = 0.3f, b = 0.7f, a = 0.6f;
+    public float colorChangeSpeed = 2f; 
+    private float timer;
 
     void Start()
     {
         DOTween.Init();
-        //timeColor = new Color(r, g, b, a);
-        //headLine.color = timeColor;
+
         foreach (Transform child in transform)
         {
             child.GetComponent<Renderer>().material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
@@ -28,6 +26,10 @@ public class LoginBallsList : MonoBehaviour
 
     void Update()
     {
-        //headLine.DOColor(new Color2(Color.white, Color.white), new Color2(Color.green, Color.black), 1);
+        timer += Time.deltaTime * colorChangeSpeed;
+        float r = Mathf.Sin(timer * 1f) * 0.5f + 0.5f;
+        float g = Mathf.Sin(timer * 2f) * 0.5f + 0.5f;
+        float b = Mathf.Sin(timer * 3f) * 0.5f + 0.5f;
+        headLine.color = new Color(r, g, b);
     }
 }

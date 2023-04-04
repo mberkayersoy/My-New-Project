@@ -215,7 +215,6 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public void OnLeaveGameButtonClicked()
     {
         PhotonNetwork.LeaveRoom();
-
     }
 
     public void OnLoginButtonClicked()
@@ -253,6 +252,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     {
         if (!PhotonNetwork.IsMasterClient) 
         {
+            Debug.Log("masterclient deðilim");
             return false;
         }
 
@@ -262,15 +262,17 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
             {
                 if (!(bool) isPlayerReady)
                 {
-                    return false;
-                }
-                else
-                {
+                    Debug.Log("if: " + isPlayerReady);
                     return false;
                 }
             }
+            else // if player has npt isPlayerReady feature.
+            {
+                Debug.Log("else: " + isPlayerReady);
+                return false;
+            }
         }
-
+        Debug.Log("Checkpalyersready: " + PhotonNetwork.IsMasterClient);
         return true;
     }
 
