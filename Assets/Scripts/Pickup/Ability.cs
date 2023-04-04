@@ -21,7 +21,7 @@ public class Ability : ScriptableObject
     private const float speedForce = 2;
     private const float jumpForce = 10;
 
-    public void GiveAbility(Player player)
+    public void GiveAbility(PlayerAttribute player)
     {
         PersonalCanvas playerPersonvalCanvas = player.GetComponentInChildren<PersonalCanvas>();
 
@@ -51,7 +51,7 @@ public class Ability : ScriptableObject
         }
 
     }
-    public void TakeAbility(Player player)
+    public void TakeAbility(PlayerAttribute player)
     {
         PersonalCanvas playerPersonvalCanvas = player.GetComponentInChildren<PersonalCanvas>();
         if (abilityType == AbilityType.Speed)

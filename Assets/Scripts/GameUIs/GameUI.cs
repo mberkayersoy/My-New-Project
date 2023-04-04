@@ -23,8 +23,7 @@ public class GameUI : MonoBehaviour
 
     public void GameEnd()
     {
-        Debug.Log("GameManager.Instance.isGameEnd: " + GameManager.Instance.isGameEnd);
-        if (GameManager.Instance.isGameEnd)
+        if (GameManagerr.Instance.isGameEnd)
         {
             UIManager.Instance.GameEndUISection.gameObject.SetActive(true);
             gameObject.SetActive(false);

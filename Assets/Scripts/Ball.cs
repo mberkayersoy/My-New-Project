@@ -27,7 +27,7 @@ public class Ball : MonoBehaviour
     {
         if(nextBall == null)
         {
-            GameManager.Instance.RemoveBallList(gameObject.GetComponent<Ball>());
+            GameManagerr.Instance.RemoveBallList(gameObject.GetComponent<Ball>());
             ScoreBoard.Instance.SetScore((TeamID)raycastWeapon.teamNumber, transform.localScale.x);
             Destroy(gameObject);
             return;
@@ -39,7 +39,7 @@ public class Ball : MonoBehaviour
         //Debug.DrawLine(transform.position, Quaternion.Euler(45, 45, 45) * rb.velocity + transform.position, Color.red, 2.0f);
         //Debug.DrawLine(transform.position, Quaternion.Euler(-45, -45, -45) * rb.velocity + transform.position, Color.blue, 2.0f);
         GenerateBallChilds((TeamID)raycastWeapon.teamNumber);
-        GameManager.Instance.RemoveBallList(gameObject.GetComponent<Ball>());
+        GameManagerr.Instance.RemoveBallList(gameObject.GetComponent<Ball>());
         Destroy(gameObject);
     }
 
@@ -60,7 +60,7 @@ public class Ball : MonoBehaviour
         ball1.GetComponent<Ball>().GetComponent<Rigidbody>().velocity = Quaternion.Euler(30, 30, 30) * rb.velocity;
         ball2.GetComponent<Ball>().GetComponent<Rigidbody>().velocity = Quaternion.Euler(-30, -30, -30) * rb.velocity;
 
-        GameManager.Instance.AddBallList(ball1.GetComponent<Ball>(), ball2.GetComponent<Ball>());
+        GameManagerr.Instance.AddBallList(ball1.GetComponent<Ball>(), ball2.GetComponent<Ball>());
     }
     //private void Update()
     //{

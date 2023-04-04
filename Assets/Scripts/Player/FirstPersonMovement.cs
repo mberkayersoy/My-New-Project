@@ -21,7 +21,7 @@ public class FirstPersonMovement : MonoBehaviour
     [Space(5)]
 
     public LayerMask GroundLayers;
-    public Player player;
+    public PlayerAttribute player;
     private float _speed;
     //Rigidbody rb;
     public KeyCode sprintKey = KeyCode.LeftShift;
@@ -70,7 +70,7 @@ public class FirstPersonMovement : MonoBehaviour
 
     private void Start()
     {
-        player = GetComponent<Player>();
+        player = GetComponent<PlayerAttribute>();
         _controller = GetComponent<CharacterController>();
         input = GetComponent<StarterAssetsInputs>();
         playerInput = GetComponent<PlayerInput>();
@@ -314,7 +314,7 @@ public class FirstPersonMovement : MonoBehaviour
     {
         if (hit.gameObject.CompareTag("Ball"))
         {
-            GameManager.Instance.EditHitPlayers(this.gameObject, hit.gameObject.GetComponent<Ball>().ballTeamID);
+            GameManagerr.Instance.EditHitPlayers(this.gameObject, hit.gameObject.GetComponent<Ball>().ballTeamID);
         }
     }
 

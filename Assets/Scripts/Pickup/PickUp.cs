@@ -14,7 +14,7 @@ public class PickUp : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<Player>().SetAbility(ability);
+            other.GetComponent<PlayerAttribute>().SetAbility(ability);
             Destroy(gameObject);
         }
     }

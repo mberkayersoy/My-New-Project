@@ -127,5 +127,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e552ebd98fa7665428fd2f27bc770d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextBall: {fileID: 0}
+  nextBall: {fileID: 6793059575511304209, guid: 0214bc16b93684d41b483e5ca64ca547, type: 3}
   ballTeamID: 0

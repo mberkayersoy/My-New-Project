@@ -29,7 +29,7 @@ public class CharacterAiming : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!GetComponent<Player>().isDead)
+        if (!GetComponent<PlayerAttribute>().isDead)
         {
             if (Input.GetButtonDown("Fire1"))
             {

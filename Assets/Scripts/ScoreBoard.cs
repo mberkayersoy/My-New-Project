@@ -30,7 +30,7 @@ public class ScoreBoard : MonoBehaviour
         teamscores[teamID] += (int)(scoreMult * (1 / ballScale));
         UIManager.Instance.GameUISection.ScoreDisplay();
 
-        if (GameManager.Instance.isGameEnd)
+        if (GameManagerr.Instance.isGameEnd)
         {
             GetWinners();
         }

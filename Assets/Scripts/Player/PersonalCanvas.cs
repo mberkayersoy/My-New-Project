@@ -18,13 +18,13 @@ public class PersonalCanvas : MonoBehaviour
     [Space]
 
     [Header("Other Variables")]
-    public Player player;
+    public PlayerAttribute player;
     float abilityRemainingTime;
     float respawnRemainingTime = 5f;
     // Time stamp arastir.
     void Start()
     {
-        player = GetComponentInParent<Player>();
+        player = GetComponentInParent<PlayerAttribute>();
         UITeamColor.color = player.teamColor;
         deadSection.SetActive(false);
         abilityCountDownDisplay.SetActive(false);

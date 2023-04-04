@@ -23,7 +23,7 @@ public class PreGameUI : MonoBehaviour
         }
         startCountDownText.text = "GO!";
 
-        GameManager.Instance.StartTheGame();
+        GameManagerr.Instance.StartTheGame();
         StartCoroutine(CleanUI());
     }
 

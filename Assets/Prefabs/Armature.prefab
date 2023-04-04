@@ -17299,6 +17299,9 @@ MonoBehaviour:
   camPos: {fileID: 5846267904413109947}
   sensitivity: 1
   smoothing: 1.5
+  camMinRot: -25
+  camMinRotOnAir: -40
+  camMaxRot: 50
 --- !u!1 &5846267905092238519
 GameObject:
   m_ObjectHideFlags: 0
@@ -33265,6 +33268,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6244422105303324479}
+  - component: {fileID: 6618340071253517144}
   - component: {fileID: 20415759877295429}
   - component: {fileID: 20415759877295483}
   - component: {fileID: 20415759877295482}
@@ -33274,6 +33278,8 @@ GameObject:
   - component: {fileID: 20415759877295430}
   - component: {fileID: 20415759877295484}
   - component: {fileID: 20415759877295485}
+  - component: {fileID: 2283691982871966054}
+  - component: {fileID: 9129728160372089060}
   m_Layer: 0
   m_Name: Armature
   m_TagString: Player
@@ -33306,6 +33312,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &6618340071253517144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6765379152381201797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 2283691982871966054}
+  - {fileID: 9129728160372089060}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!95 &20415759877295429
 Animator:
   serializedVersion: 5
@@ -33394,6 +33424,7 @@ MonoBehaviour:
   moveSpeed: 2
   sprintSpeed: 5.335
   jumpHeight: 1.2
+  meshMaterial: {fileID: 0}
   teamColor: {r: 1, g: 1, b: 1, a: 1}
   isDead: 0
   currentAbility: {fileID: 0}
@@ -33417,7 +33448,7 @@ MonoBehaviour:
     m_Bits: 8
   player: {fileID: 0}
   sprintKey: 304
-  JumpHeight: 5
+  _controller: {fileID: 0}
   Gravity: -15
   JumpTimeout: 0.5
   FallTimeout: 0.15
@@ -33435,6 +33466,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
   - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
   FootstepAudioVolume: 0.5
+  camera: {fileID: 0}
+  LockCameraPosition: 0
 --- !u!114 &20415759877295430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33568,6 +33601,58 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &2283691982871966054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6765379152381201797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 1
+    SynchronizeType: 0
+    Name: Speed
+  - Type: 4
+    SynchronizeType: 0
+    Name: Jump
+  - Type: 4
+    SynchronizeType: 0
+    Name: Grounded
+  - Type: 4
+    SynchronizeType: 0
+    Name: FreeFall
+  - Type: 1
+    SynchronizeType: 0
+    Name: MotionSpeed
+  - Type: 4
+    SynchronizeType: 0
+    Name: Death
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
+--- !u!114 &9129728160372089060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6765379152381201797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &7148772827077054983
 GameObject:
   m_ObjectHideFlags: 0

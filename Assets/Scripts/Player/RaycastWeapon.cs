@@ -25,7 +25,15 @@ public class RaycastWeapon : MonoBehaviour
 
     private void Start()
     {
-        teamNumber = GetComponentInParent<Player>().teamID;
+        teamNumber = GetComponentInParent<PlayerAttribute>().teamID;
+
+        foreach (var effect in muzzleFlash)
+        {
+            ParticleSystem.MainModule mainModule = effect.main;
+            mainModule.startColor = TeamColor.GetTeamColor((TeamID)teamNumber);
+        }
+
+        tracerEffect.startColor = TeamColor.GetTeamColor((TeamID)teamNumber);
     }
     public void StartFiring()
     {
