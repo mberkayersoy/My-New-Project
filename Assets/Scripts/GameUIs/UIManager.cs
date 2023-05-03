@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviourPunCallbacks
 {
     public static UIManager Instance;
     private void Awake()
@@ -20,6 +21,7 @@ public class UIManager : MonoBehaviour
     public PreGameUI PreGameUISection;
     public GameUI GameUISection;
     public GameEndUI GameEndUISection;
+    public PhotonView pw;
 
 
     private void Start()

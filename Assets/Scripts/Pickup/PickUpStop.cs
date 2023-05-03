@@ -22,7 +22,7 @@ public class PickUpStop : MonoBehaviour
     {
         if (other.CompareTag("Platform"))
         {
-            rb.velocity = Vector3.zero;
+            //rb.velocity = Vector3.zero;
             rb.isKinematic = true;
             gameObject.GetComponent<Collider>().enabled = false;
             RotateAbility();

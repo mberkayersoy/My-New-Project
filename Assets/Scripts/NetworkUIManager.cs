@@ -25,6 +25,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
     [Header("Room List Panel")]
     public GameObject roomlistPanel;
+    public GameObject roomListInfo;
     public GameObject roomlistContent;
     public GameObject roomlistRowPrefab;
 
@@ -32,6 +33,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public GameObject insideRoomPanel;
     public Transform playersListTransform;
     public Button startgameButton;
+    public GameObject insideRoomInfoPanel;
     public GameObject playerlistRowPrefab;
 
     private Dictionary<string, RoomInfo> roomCacheList;
@@ -49,6 +51,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public override void OnConnectedToMaster()
     {
         SetActivePanel(choicePanel.name);
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     public override void OnJoinedLobby()
@@ -99,9 +102,18 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
             entry.GetComponent<UIPlayerListEntry>().Initialize(player.ActorNumber, player.NickName);
 
+            insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
+            insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
+            insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
+
             if (player.CustomProperties.TryGetValue("IsPlayerReady", out object isPlayerReady))
             {
                 entry.GetComponent<UIPlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
+            }
+
+            if (player.CustomProperties.TryGetValue("SelectedTeamID", out object selectedTeamID))
+            {
+                entry.GetComponent<UIPlayerListEntry>().SetPlayerTeamColor((TeamID)selectedTeamID);
             }
 
             playerlistElements.Add(player.ActorNumber, entry);
@@ -136,10 +148,13 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         entry.transform.localScale = Vector3.one;
 
         entry.GetComponent<UIPlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
-
         playerlistElements.Add(newPlayer.ActorNumber, entry);
 
         startgameButton.gameObject.SetActive(CheckPlayersReady());
+        insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
+        insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
+        insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
+
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -147,6 +162,10 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         Destroy(playerlistElements[otherPlayer.ActorNumber].gameObject);
         playerlistElements.Remove(otherPlayer.ActorNumber);
         startgameButton.gameObject.SetActive(CheckPlayersReady());
+        insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
+        insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
+        insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
+
 
     }
 
@@ -156,6 +175,10 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         {
             startgameButton.gameObject.SetActive(CheckPlayersReady());
         }
+        insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
+        insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
+        insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
+
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -170,6 +193,10 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
             if (changedProps.TryGetValue("IsPlayerReady", out object isPlayerReady))
             {
                 entry.GetComponent<UIPlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
+            }
+            if (changedProps.TryGetValue("SelectedTeamID", out object selectedTeamID))
+            {
+                entry.GetComponent<UIPlayerListEntry>().SetPlayerTeamColor((TeamID)selectedTeamID);
             }
         }
 
@@ -199,7 +226,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         roomName = (roomName.Equals(string.Empty)) ? "Room " + Random.Range(100, 90000) : roomName;
 
         byte.TryParse(maxPlayerInput.text, out byte maxPlayer);
-        maxPlayer = (byte)Mathf.Clamp(maxPlayer, 2, 8);
+        maxPlayer = (byte)Mathf.Clamp(maxPlayer, 1, 8);
 
         RoomOptions options = new RoomOptions { MaxPlayers = maxPlayer };
         PhotonNetwork.CreateRoom(roomName, options, null);
@@ -239,6 +266,23 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
             PhotonNetwork.JoinLobby();
         }
         SetActivePanel(roomlistPanel.name);
+
+        InvokeRepeating(nameof(UpdateRoomListInfos), 0, 2);
+    }
+
+    void UpdateRoomListInfos()
+    {
+        if (roomlistPanel.activeSelf)
+        {
+            roomListInfo.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Total Room: " + PhotonNetwork.CountOfRooms.ToString();
+            roomListInfo.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Players In Room: " + PhotonNetwork.CountOfPlayersInRooms.ToString();
+            roomListInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Players In Lobby: " + PhotonNetwork.CountOfPlayersOnMaster.ToString();
+            roomListInfo.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = "Online Players: " + PhotonNetwork.CountOfPlayers.ToString();
+        }
+        else
+        {
+            CancelInvoke(nameof(UpdateRoomListInfos));
+        }
     }
 
     public void OnStartGameButtonClicked()
@@ -251,8 +295,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     private bool CheckPlayersReady()
     {
         if (!PhotonNetwork.IsMasterClient) 
-        {
-            Debug.Log("masterclient deðilim");
+        {   
             return false;
         }
 
@@ -262,13 +305,11 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
             {
                 if (!(bool) isPlayerReady)
                 {
-                    Debug.Log("if: " + isPlayerReady);
                     return false;
                 }
             }
             else // if player has npt isPlayerReady feature.
             {
-                Debug.Log("else: " + isPlayerReady);
                 return false;
             }
         }
@@ -338,7 +379,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
             entry.transform.SetParent(roomlistContent.transform);
             entry.transform.localScale = Vector3.one;
 
-            entry.GetComponent<UIRoomListEntry>().Initialize(info.Name, (byte)info.PlayerCount, info.MaxPlayers);
+            entry.GetComponent<UIRoomListEntry>().Initialize(info.Name, (byte)info.PlayerCount, info.MaxPlayers, (info.MaxPlayers == info.PlayerCount));
 
             roomlistElements.Add(info.Name, entry);
 

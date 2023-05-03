@@ -6,7 +6,7 @@ using Photon.Pun;
 
 namespace StarterAssets
 {
-	public class StarterAssetsInputs : MonoBehaviour
+	public class StarterAssetsInputs : MonoBehaviourPun
 	{
 		[Header("Character Input Values")]
 		public Vector2 move;
@@ -24,46 +24,69 @@ namespace StarterAssets
 		public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-		public void OnMove(InputValue value)
+        public void OnMove(InputValue value)
 		{
-			MoveInput(value.Get<Vector2>());
+
+				MoveInput(value.Get<Vector2>());
+
+			
 		}
 
 		public void OnLook(InputValue value)
 		{
-			if(cursorInputForLook)
-			{
-				LookInput(value.Get<Vector2>());
+
+				if (cursorInputForLook)
+				{
+					LookInput(value.Get<Vector2>());
+
+				
 			}
+	
 		}
 
 		public void OnJump(InputValue value)
 		{
-			JumpInput(value.isPressed);
+				JumpInput(value.isPressed);
+			
 		}
 
 		public void OnSprint(InputValue value)
 		{
-			SprintInput(value.isPressed);
+
+				SprintInput(value.isPressed);
+			
+
 		}
 
-		//public void OnAim(InputValue value)
+		//public void OnShoot(InputValue value)
 		//{
-		//	AimInput(value.isPressed);
+
+		//		pw.RPC("ShootInputRPC", RpcTarget.Others, value.isPressed);
+			
 		//}
-
-		public void OnShoot(InputValue value)
-		{
-			ShootInput(value.isPressed);
-		}
 #endif
+		private void ShootInput(bool newShootState)
+		{
+			shoot = newShootState;
+		}
 
-
+		public void MoveInputRPC(Vector2 newMoveDirection)
+		{
+			move = newMoveDirection;
+		}
+		public void JumpInputRPC(bool newJumpState)
+		{
+			jump = newJumpState;
+		}
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
-		} 
+		}
 
+		public void LookInputRPC(Vector2 newLookDirection)
+		{
+			look = newLookDirection;
+		}
 		public void LookInput(Vector2 newLookDirection)
 		{
 			look = newLookDirection;
@@ -72,6 +95,10 @@ namespace StarterAssets
 		public void JumpInput(bool newJumpState)
 		{
 			jump = newJumpState;
+		}
+		public void SprintInputRPC(bool newSprintState)
+		{
+			sprint = newSprintState;
 		}
 
 		public void SprintInput(bool newSprintState)
@@ -84,10 +111,10 @@ namespace StarterAssets
 		//	aim = newAimState;
 		//}
 
-		public void ShootInput(bool newShootState)
-        {
-			shoot = newShootState;
-        }
+		//public void ShootInput(bool newShootState)
+  //      {
+		//	shoot = newShootState;
+  //      }
 
 		private void OnApplicationFocus(bool hasFocus)
 		{

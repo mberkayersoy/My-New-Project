@@ -2,6 +2,8 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 public enum AbilityType
 {
     Speed,
@@ -31,7 +33,9 @@ public class Ability : ScriptableObject
             playerPersonvalCanvas.DisplayAbility("Speed Force Updated");
             player.moveSpeed *= speedForce;
             player.sprintSpeed *= speedForce;
-            currentEffect = Instantiate(abilityPrefab, player.transform.position + new Vector3(0, 0.1f, 0), Quaternion.Euler(-90, 0, 0), player.transform);
+            currentEffect = PhotonNetwork.Instantiate("CFX3_DarkMagicAura_A", player.transform.position + new Vector3(0, -0.7f, 0), Quaternion.Euler(-90, 0, 0), 0);
+            //PhotonNetwork.AllocateViewID(currentEffect.GetPhotonView());
+            currentEffect.transform.SetParent(player.transform);
 
         }
         else if (abilityType == AbilityType.Jump)
@@ -39,7 +43,8 @@ public class Ability : ScriptableObject
             playerPersonvalCanvas.StartAbilityCountDown(abilityTime);
             player.jumpHeight *= jumpForce;
             playerPersonvalCanvas.DisplayAbility("Jump Force Updated");
-            currentEffect = Instantiate(abilityPrefab, player.transform.position + new Vector3(0, 0.1f, 0), Quaternion.Euler(-90, 0, 0), player.transform);
+            currentEffect = PhotonNetwork.Instantiate("CFX3_Vortex_Ground", player.transform.position + new Vector3(0, -0.7f, 0), Quaternion.Euler(-90, 0, 0), 0);
+            currentEffect.transform.SetParent(player.transform);
 
         }
         else if (abilityType == AbilityType.Jetpack)
@@ -47,10 +52,18 @@ public class Ability : ScriptableObject
             playerPersonvalCanvas.StartAbilityCountDown(abilityTime);
 
             playerPersonvalCanvas.DisplayAbility("Jump Force Updated");
-            currentEffect = Instantiate(abilityPrefab, player.transform.localPosition + new Vector3(0.02f, 1.25f, -0.205f), Quaternion.identity, player.transform);
+            //currentEffect = PhotonNetwork.Instantiate(abilityPrefab, player.transform.localPosition + new Vector3(0.02f, 1.25f, -0.205f), Quaternion.identity, player.transform);
         }
 
     }
+    [PunRPC]
+    void SetParent(int playerID, int viewID)
+    {
+        PhotonView view = PhotonView.Find(viewID);
+        GameObject player = PhotonView.Find(playerID).gameObject;
+        view.transform.SetParent(player.transform);
+    }
+
     public void TakeAbility(PlayerAttribute player)
     {
         PersonalCanvas playerPersonvalCanvas = player.GetComponentInChildren<PersonalCanvas>();
@@ -65,7 +78,8 @@ public class Ability : ScriptableObject
             playerPersonvalCanvas.StartAbilityCountDown(abilityTime);
             player.jumpHeight /= jumpForce;
         }
-        Destroy(currentEffect);
+
+        PhotonNetwork.Destroy(currentEffect);
     }
 
 }

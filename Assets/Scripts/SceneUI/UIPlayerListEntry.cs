@@ -13,15 +13,16 @@ public class UIPlayerListEntry : MonoBehaviour
     [Header("UI References")]
     public TextMeshProUGUI PlayerNameText;
 
-    //public Image PlayerColorImage;
+    public Image PlayerColorImage;
     public Image PlayerReadyImage;
     public Button PlayerReadyButton;
     public TMP_Dropdown TeamDropdown;
-    //public int maxSelections = 2;
-    //private Dictionary<string, int> selectionCounts = new Dictionary<string, int>();
+    public int maxSelections = 2;
+    private Dictionary<string, int> selectionCounts = new Dictionary<string, int>();
 
     private int ownerId;
     private bool isPlayerReady;
+    private TeamID selectedTeamID;
 
     #region UNITY
 
@@ -32,6 +33,11 @@ public class UIPlayerListEntry : MonoBehaviour
 
     public void Start()
     {
+        //Selection counts initialization
+        foreach (var option in TeamDropdown.options)
+        {
+            selectionCounts.Add(option.text, 0);
+        }
         if (PhotonNetwork.LocalPlayer.ActorNumber != ownerId)
         {
             PlayerReadyButton.gameObject.SetActive(false);
@@ -55,16 +61,10 @@ public class UIPlayerListEntry : MonoBehaviour
                     FindObjectOfType<NetworkUIManager>().LocalPlayerPropertiesUpdated();
                 }
             });
+
+            TeamDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         }
 
-        // Selection counts initialization
-        //foreach (var option in TeamDropdown.options)
-        //{
-        //    selectionCounts.Add(option.text, 0);
-        //}
-
-        //// OnValueChanged event subscription
-        //TeamDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
     }
 
     public void OnDisable()
@@ -78,11 +78,7 @@ public class UIPlayerListEntry : MonoBehaviour
     {
         ownerId = playerId;
         PlayerNameText.text = playerName;
-
-        //TeamDropdown.onValueChanged.AddListener(delegate
-        //{
-        //    SetPlayerTeamColor();
-        //});
+        SetPlayerTeamColor(selectedTeamID);
     }
 
     private void OnPlayerNumberingChanged()
@@ -106,42 +102,46 @@ public class UIPlayerListEntry : MonoBehaviour
         }
     }
 
-    //public void SetPlayerTeamColor()
-    //{
-    //    // Get the selected team from the dropdown
-    //    int selectedTeam = TeamDropdown.value;
+    public int SetPlayerTeamColor(TeamID teamID)
+    {
+        // Get the selected team from the dropdown
+        int selectedTeam = TeamDropdown.value;
 
-    //    // Convert the selected team ID to TeamID enum
-    //    TeamID teamID = (TeamID)selectedTeam;
 
-    //    // Get the corresponding team color
-    //    Color teamColor = TeamColor.GetTeamColor(teamID);
+        // Get the corresponding team color
+        Color teamColor = TeamColor.GetTeamColor(teamID);
+        // Set the player color image to the team color
+        PlayerColorImage.color = teamColor;
+        return selectedTeam;
+    }
 
-    //    // Set the player color image to the team color
-    //    PlayerColorImage.color = teamColor;
-    //}
+    private void OnDropdownValueChanged(int selectionIndex = 0)
+    {
+        string selectionText = TeamDropdown.options[selectionIndex].text;
 
-    //private void OnDropdownValueChanged(int selectionIndex)
-    //{
-    //    string selectionText = TeamDropdown.options[selectionIndex].text;
+        // Check if the selection limit has been reached
+        if (selectionCounts[selectionText] >= maxSelections)
+        {
+            // Deselect the current selection
+            TeamDropdown.SetValueWithoutNotify(-1);
+        }
+        else
+        {
+            // Increase the selection count of the selected option
+            selectionCounts[selectionText]++;
+        }
 
-    //    // Check if the selection limit has been reached
-    //    if (selectionCounts[selectionText] >= maxSelections)
-    //    {
-    //        // Deselect the current selection
-    //        TeamDropdown.SetValueWithoutNotify(-1);
-    //    }
-    //    else
-    //    {
-    //        // Increase the selection count of the selected option
-    //        selectionCounts[selectionText]++;
-    //    }
+        // Decrease the selection count of the previously selected option (if any)
+        if (selectionIndex >= 0)
+        {
+            string previousSelectionText = TeamDropdown.options[selectionIndex].text;
+            selectionCounts[previousSelectionText]--;
+        }
 
-    //    // Decrease the selection count of the previously selected option (if any)
-    //    if (selectionIndex >= 0)
-    //    {
-    //        string previousSelectionText = TeamDropdown.options[selectionIndex].text;
-    //        selectionCounts[previousSelectionText]--;
-    //    }
-    //}
+        selectedTeamID = (TeamID)selectionIndex;
+        PhotonNetwork.LocalPlayer.SetTeamID(selectionIndex);
+        ExitGames.Client.Photon.Hashtable team = new() { { "SelectedTeamID", selectedTeamID } };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(team);
+
+    }
 }

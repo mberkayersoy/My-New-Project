@@ -21,17 +21,18 @@ public class NetworkManagement : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         GetLog("Player connected to lobby...");
-        PhotonNetwork.JoinOrCreateRoom("room name", new RoomOptions { MaxPlayers = 2, IsOpen = true, IsVisible = true }, TypedLobby.Default);
+        //PhotonNetwork.JoinOrCreateRoom("room name", new RoomOptions { MaxPlayers = 2, IsOpen = true, IsVisible = true }, TypedLobby.Default);
     }
 
     public override void OnJoinedRoom()
     {
         GetLog("Player joined a room...");
 
-        //GameObject player = PhotonNetwork.Instantiate("Armature", Vector3.zero, Quaternion.identity);
+        //GameObject player = PhotonNetwork.Instantiate("Capsule", Vector3.up, Quaternion.identity);
+        //GameManagerr.Instance.GiveCamera(player);
         //GameManagerr.Instance.playersList.Add(player);
-        //GameManagerr.Instance.CreatePlayers();
-
+        //GameManagerr.Instance.GeneratePlayers(player);
+        //GameManagerr.Instance.gameObject.SetActive(true);
     }
 
     public override void OnLeftLobby()

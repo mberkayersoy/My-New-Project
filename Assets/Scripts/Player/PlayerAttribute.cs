@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttribute : MonoBehaviour
+public class PlayerAttribute : MonoBehaviourPunCallbacks
 {
     [Header("Numeric Variables")]
     public int teamID;
@@ -13,8 +13,7 @@ public class PlayerAttribute : MonoBehaviour
     public float sprintSpeed = 5.335f;
     [Tooltip("The height the player can jump")]
     public float jumpHeight = 1.2f;
-    [Tooltip("The height the player can jump")]
-    public SkinnedMeshRenderer meshMaterial;
+
 
     [Space]
 
@@ -22,6 +21,7 @@ public class PlayerAttribute : MonoBehaviour
     public Color teamColor;
     public bool isDead;
     public Ability currentAbility;
+    public MeshRenderer meshMaterial;
 
     private void Awake()
     {
@@ -41,8 +41,11 @@ public class PlayerAttribute : MonoBehaviour
     {
         return currentAbility;
     }
+
     public void SetAbility(Ability newAbility)
     {
+        Debug.Log("viewID setability: " + GetComponent<PhotonView>().ViewID);
+        //if (!GetComponent<PhotonView>().IsMine) return;
         if (currentAbility != null)
         {
             currentAbility.TakeAbility(this);
@@ -55,4 +58,11 @@ public class PlayerAttribute : MonoBehaviour
             currentAbility.GiveAbility(this);
         }
     }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.CompareTag("Pickup"))
+    //    {
+    //       SetAbility(other.GetComponent<PickUp>().ability);
+    //    }
+    //}
 }

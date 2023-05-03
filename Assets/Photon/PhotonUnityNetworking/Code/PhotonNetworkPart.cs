@@ -116,6 +116,11 @@ namespace Photon.Pun
             NetworkingClient.AddCallbackTarget(target);
         }
 
+        public static void RaiseEvent(byte evCode, object p, RaiseEventOptions raiseEventOptions)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// Removes the target object from callbacks for its implemented callback-interfaces.

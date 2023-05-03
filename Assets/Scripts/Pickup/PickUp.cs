@@ -1,10 +1,12 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickUp : MonoBehaviour
+public class PickUp : MonoBehaviourPunCallbacks
 {
     public Ability ability;
+    private int ownerID;
 
     private void Start()
     {
@@ -14,8 +16,11 @@ public class PickUp : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            ownerID = other.GetComponent<PhotonView>().Owner.ActorNumber;
             other.GetComponent<PlayerAttribute>().SetAbility(ability);
-            Destroy(gameObject);
+            if(PhotonNetwork.IsMasterClient)
+            PhotonNetwork.Destroy(gameObject);
+            //GetComponent<PhotonView>().RPC("DestroySphere", RpcTarget.AllBuffered);
         }
     }
 }

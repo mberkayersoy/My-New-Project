@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 public class FirstPersonLook : MonoBehaviour
 {
     [SerializeField]
@@ -19,6 +20,12 @@ public class FirstPersonLook : MonoBehaviour
     {
         // Lock the mouse cursor to the game screen.
         Cursor.lockState = CursorLockMode.Locked;
+        if (!character.gameObject.GetComponent<PhotonView>().IsMine)
+        {
+            GetComponent<Camera>().enabled = false;
+            GetComponent<FirstPersonLook>().enabled = false;
+            GetComponent<AudioListener>().enabled = false;
+        }
             
     }
 
@@ -60,8 +67,8 @@ public class FirstPersonLook : MonoBehaviour
 
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocityy, 0);
 
-        Quaternion targetRotation = Quaternion.LookRotation(camPos.position - transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0 * Time.deltaTime);
+        //Quaternion targetRotation = Quaternion.LookRotation(camPos.position - transform.position);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0 * Time.deltaTime);
     }
 
 }

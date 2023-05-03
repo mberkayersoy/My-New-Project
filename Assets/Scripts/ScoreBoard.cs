@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Photon.Pun;
 
 public class ScoreBoard : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class ScoreBoard : MonoBehaviour
         Instance = this;
     }
 
+    public PhotonView pw;
     public float scoreMult;
     public Dictionary<TeamID, float> teamscores = new Dictionary<TeamID, float>
     {
@@ -24,7 +26,13 @@ public class ScoreBoard : MonoBehaviour
         { TeamID.Green_Team, 0 },
         { TeamID.Yellow_Team, 0 },
     };
+    private void Start()
+    {
+        pw = GetComponent<PhotonView>();
 
+    }
+    
+    [PunRPC]
     public void SetScore(TeamID teamID, float ballScale)
     {
         teamscores[teamID] += (int)(scoreMult * (1 / ballScale));

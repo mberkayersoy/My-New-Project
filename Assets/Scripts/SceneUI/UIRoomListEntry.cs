@@ -12,24 +12,34 @@ public class UIRoomListEntry : MonoBehaviour
     public Button JoinRoomButton;
 
     private string roomName;
+    private bool roomStatus;
 
     public void Start()
     {
-        JoinRoomButton.onClick.AddListener(() =>
+        if (!roomStatus)
         {
-            if (PhotonNetwork.InLobby)
-            {
-                PhotonNetwork.LeaveLobby();
-            }
+            JoinRoomButton.interactable = true;
 
-            PhotonNetwork.JoinRoom(roomName);
-        });
+            JoinRoomButton.onClick.AddListener(() =>
+            {
+                if (PhotonNetwork.InLobby)
+                {
+                    PhotonNetwork.LeaveLobby();
+                }
+
+                PhotonNetwork.JoinRoom(roomName);
+            });
+        }
+        else
+        {
+            JoinRoomButton.interactable = false;
+        }
     }
 
-    public void Initialize(string name, byte currentPlayers, byte maxPlayers)
+    public void Initialize(string name, byte currentPlayers, byte maxPlayers, bool incomingStatus)
     {
+        roomStatus = incomingStatus;
         roomName = name;
-
         RoomNameText.text = name;
         RoomPlayersText.text =  "Number of Player: " + currentPlayers + " / " + maxPlayers;
     }

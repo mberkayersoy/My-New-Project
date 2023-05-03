@@ -2,15 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Photon.Pun;
+using UnityEngine.UI;
 
-public class PreGameUI : MonoBehaviour
+public class PreGameUI : MonoBehaviourPunCallbacks
 {
     private TextMeshProUGUI startCountDownText;
-    readonly int startCountDown = 2;
-    // Start is called before the first frame update
+    readonly int startCountDown = 1;
+
     void Start()
     {
         startCountDownText = GetComponentInChildren<TextMeshProUGUI>();
+    }
+
+    public void StartCountDown()
+    {
+
         StartCoroutine(CountDownDisplay());
     }
 
@@ -20,10 +27,11 @@ public class PreGameUI : MonoBehaviour
         {
             startCountDownText.text = i.ToString();
             yield return new WaitForSeconds(1f);
-        }
+        } 
         startCountDownText.text = "GO!";
 
         GameManagerr.Instance.StartTheGame();
+        //GameManagerr.Instance.pw.RPC("StartTheGame", RpcTarget.All);
         StartCoroutine(CleanUI());
     }
 

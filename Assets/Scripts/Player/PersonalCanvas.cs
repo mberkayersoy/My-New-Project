@@ -20,13 +20,12 @@ public class PersonalCanvas : MonoBehaviour
     [Header("Other Variables")]
     public PlayerAttribute player;
     float abilityRemainingTime;
-    float respawnRemainingTime = 5f;
+    public float respawnRemainingTime = 3f;
     // Time stamp arastir.
     void Start()
     {
         player = GetComponentInParent<PlayerAttribute>();
         UITeamColor.color = player.teamColor;
-        deadSection.SetActive(false);
         abilityCountDownDisplay.SetActive(false);
         announceAbility.transform.localScale = Vector3.zero;
         deadSectionCountdown = deadSection.GetComponentInChildren<TextMeshProUGUI>();
@@ -47,7 +46,6 @@ public class PersonalCanvas : MonoBehaviour
 
             if (abilityRemainingTime <= 0)
             {
-                Debug.Log("stopability");
                 StopAbility();
             }
         }

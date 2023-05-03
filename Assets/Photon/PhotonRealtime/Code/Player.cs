@@ -47,6 +47,7 @@ namespace Photon.Realtime
 
         /// <summary>Backing field for property.</summary>
         private int actorNumber = -1;
+        private int teamID = 0;
 
         /// <summary>Identifier of this player in current room. Also known as: actorNumber or actorNumber. It's -1 outside of rooms.</summary>
         /// <remarks>The ID is assigned per room and only valid in that context. It will change even on leave and re-join. IDs are never re-used per room.</remarks>
@@ -59,12 +60,19 @@ namespace Photon.Realtime
         /// <summary>Only one player is controlled by each client. Others are not local.</summary>
         public readonly bool IsLocal;
 
+        public int GetTeamID()
+        {
+            return teamID;
+        }
+        public void SetTeamID(int newTeamID)
+        {
+            teamID = newTeamID;
+        }
 
         public bool HasRejoined
         {
             get; internal set;
         }
-
 
         /// <summary>Background field for nickName.</summary>
 		private string nickName = string.Empty;

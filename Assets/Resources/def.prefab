@@ -32170,15 +32170,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2262750253333962719}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42a32563097e6054a87f84051a70f044, type: 3}
+  m_Script: {fileID: 11500000, guid: 75094daba53854041985058e0a57d90e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teamID: 1
-  moveSpeed: 20
-  sprintSpeed: 30
-  jumpHeight: 5
+  teamID: 0
+  moveSpeed: 2
+  sprintSpeed: 5.335
+  jumpHeight: 1.2
   meshMaterial: {fileID: 5794898221521750103}
-  teamColor: {r: 1, g: 1, b: 1, a: 1}
+  teamColor: {r: 0, g: 0, b: 0, a: 0}
   isDead: 0
   currentAbility: {fileID: 0}
 --- !u!114 &4813533426594930461
@@ -32221,6 +32221,7 @@ MonoBehaviour:
   FootstepAudioVolume: 0.5
   camera: {fileID: 1416257340411730894}
   LockCameraPosition: 0
+  crossHairTargets: []
 --- !u!114 &4813533426594930460
 MonoBehaviour:
   m_ObjectHideFlags: 0

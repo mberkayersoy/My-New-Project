@@ -3,29 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class RaycastWeapon : MonoBehaviour
+public class RaycastWeapon : MonoBehaviourPunCallbacks
 {
     [Header("VFX Variables")]
-
     public ParticleSystem[] muzzleFlash;
     public ParticleSystem hitEffect;
     public TrailRenderer tracerEffect;
     public bool isFiring = false;
 
     [Space]
-    
-    [Header("Tranform Variables")]
+    [Header("Transform Variables")]
     public Transform raycastOrigin;
     public Transform raycastDestination;
-
-
     public int teamNumber;
     Ray ray;
     RaycastHit hitInfo;
+    public PhotonView pw;
 
     private void Start()
     {
-        teamNumber = GetComponentInParent<PlayerAttribute>().teamID;
+        teamNumber = PhotonNetwork.LocalPlayer.GetTeamID();
+        pw = GetComponent<PhotonView>();
 
         foreach (var effect in muzzleFlash)
         {
@@ -35,39 +33,60 @@ public class RaycastWeapon : MonoBehaviour
 
         tracerEffect.startColor = TeamColor.GetTeamColor((TeamID)teamNumber);
     }
+
+    [PunRPC]
     public void StartFiring()
     {
         isFiring = true;
-        foreach (var particle in muzzleFlash)
-        {
-            particle.Emit(1);
-        }
+        pw.RPC("EmitMuzzleFlash", RpcTarget.All);
 
         ray.origin = raycastOrigin.position;
         ray.direction = raycastDestination.position - raycastOrigin.position;
 
+        var tracer = PhotonNetwork.Instantiate("BulletTracer", ray.origin, Quaternion.identity);
+        tracer.GetComponent<TrailRenderer>().startColor = TeamColor.GetTeamColor((TeamID)teamNumber);
+        tracer.GetComponent<TrailRenderer>().AddPosition(ray.origin);
 
-        var tracer = Instantiate(tracerEffect, ray.origin, Quaternion.identity);
-        tracer.AddPosition(ray.origin);
-
+        Vector3 RayOrigin = ray.origin;
         if (Physics.Raycast(ray, out hitInfo))
         {
-            //Debug.DrawLine(ray.origin, hitInfo.point, Color.green, 2.0f);
-            hitEffect.transform.position = hitInfo.point;
-            hitEffect.transform.forward = hitInfo.normal;
-            hitEffect.Emit(1);
+            pw.RPC("EmitHitEffect", RpcTarget.All, hitInfo.point, hitInfo.normal);
+
             tracer.transform.position = hitInfo.point;
 
             if (hitInfo.transform.CompareTag("Ball"))
             {
-                hitInfo.transform.GetComponent<Ball>().Split(this, ray.origin);
-               // Debug.Log(hitInfo.distance);
+                PhotonView ballPhotonView = hitInfo.collider.GetComponent<PhotonView>();
+                // Call the Split() method on all clients using Photon RPC
+                ballPhotonView.RPC("Split", RpcTarget.AllViaServer, teamNumber, transform.forward);
+                GameManagerr.Instance.pw.RPC("GenerateAbility", RpcTarget.All, hitInfo.point);
+                //Debug.Log("raycastweapon: " + PhotonNetwork.LocalPlayer.GetTeamID());
+                //hitInfo.transform.GetComponent<Ball>().pw.RPC("Split", RpcTarget.All, PhotonNetwork.LocalPlayer.GetTeamID(), RayOrigin);
+                //hitInfo.transform.GetComponent<Ball>().Split(teamNumber, RayOrigin);
             }
         }
-   
     }
+
+    [PunRPC]
     public void StopFiring()
     {
         isFiring = false;
+    }
+
+    [PunRPC]
+    void EmitMuzzleFlash()
+    {
+        foreach (var particle in muzzleFlash)
+        {
+            particle.Emit(1);
+        }
+    }
+
+    [PunRPC]
+    void EmitHitEffect(Vector3 hitPosition, Vector3 hitNormal)
+    {
+        hitEffect.transform.position = hitPosition;
+        hitEffect.transform.forward = hitNormal;
+        hitEffect.Emit(1);
     }
 }

@@ -18,7 +18,7 @@ public class GameUI : MonoBehaviour
         teamScoresText[1].text = "Red Team: " + ScoreBoard.Instance.teamscores[TeamID.Red_Team];
         teamScoresText[2].text = "Green Team: " + ScoreBoard.Instance.teamscores[TeamID.Green_Team];
         teamScoresText[3].text = "Yellow Team: " + ScoreBoard.Instance.teamscores[TeamID.Yellow_Team];
-        GameEnd();
+        //GameEnd();
     }
 
     public void GameEnd()

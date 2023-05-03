@@ -40,6 +40,39 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - OnPlayerPropertiesUpdate
+  - AddTracerPosition
+  - PlayHitEffect
+  - PlayMuzzleFlash
+  - EmitHitEffect
+  - EmitMuzzleFlash
+  - ShootInputRPC
+  - MoveInputRPC
+  - JumpInputRPC
+  - SprintInputRPC
+  - LookInputRPC
+  - SyncPosition
+  - JumpAndGravity
+  - Move
+  - GroundedCheck
+  - OnControllerColliderHit
+  - OnFootstep
+  - OnLand
+  - ResetAnimator
+  - SetScore
+  - GenerateBallChilds
+  - Split
+  - StartFiring
+  - StopFiring
+  - DestroySphere
+  - DestroyBall
+  - SetBallTeamID
+  - AddBallList
+  - GenerateAbility
+  - RemoveBallList
+  - SetAbility
+  - SetCurrentEffect
+  - SetParent
+  - CheckGameEnd
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

@@ -1,83 +1,161 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.Animations.Rigging;
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 
-public class GameManagerr : MonoBehaviour
+public class GameManagerr : MonoBehaviourPunCallbacks
 {
-    public static GameManagerr Instance;
+    private static GameManagerr instance; // Tek örnek
+    public static GameManagerr Instance // Eriþim için kullanýlan özellik
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<GameManagerr>();
+                if (instance == null)
+                {
+                    Debug.LogError("GameManagerr not found in the scene.");
+                }
+            }
+            return instance;
+        }
+    }
     private void Awake()
     {
-        if (Instance)
+        if (instance != null && instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
             return;
         }
-        Instance = this;
+        instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
 
     public GameObject[] spawnPoints;
-    public Camera playerCamera;
     public List<GameObject> playersList;
     public List<GameObject> abilities;
-    public List<Ball> ballList;
-    public Ball mainBall;
+    public List<int> ballList;
+    public GameObject mainBall;
     public float respawnTime = 5f;
     public int abilityPercentage;
     public bool isGameEnd = false;
-
+    public PhotonView pw;
     public void StartTheGame()
     {
-        mainBall.MoveTheBall();
-        ballList.Add(mainBall);
+        if (!PhotonNetwork.IsMasterClient) return; // Only MasterClient can instantiate first ball.
+
+        mainBall = PhotonNetwork.InstantiateRoomObject("Ball", Vector3.up * 40, Quaternion.identity);
+        var randomVector = Random.insideUnitSphere * 25f;
+        mainBall.GetComponent<Rigidbody>().AddForce(randomVector, ForceMode.Impulse);
+        //ballList.Add(mainBall.GetPhotonView().ViewID);
+        pw.RPC("AddBallList", RpcTarget.All, mainBall.GetPhotonView().ViewID);
         isGameEnd = false;
-        GivePlayerFullAccess(playersList);
     }
     private void Start()
     {
-        foreach (GameObject player in playersList)
-        {
-            GeneratePlayers(player);
+        if (!PhotonNetwork.IsConnected) return;
 
+        if (PhotonNetwork.IsMasterClient)
+        {
+            // MasterClient bu GameManager instance'ýný Photon aðý üzerinde oluþturur.
+            PhotonNetwork.InstantiateRoomObject("GameManagerr", Vector3.zero, Quaternion.identity);
         }
+
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+            { "PlayerLoadedLevel", true} 
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props)
+            ;
+        pw = GetComponent<PhotonView>();
+
         for (int i = 0; i < spawnPoints.Length; i++)
         {
             spawnPoints[i].GetComponent<MeshRenderer>().material.SetColor("_Color", TeamColor.GetTeamColor((TeamID)i));
         }
     }
 
+    private bool CheckAllPlayerLoadedLevel()
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.CustomProperties.TryGetValue("PlayerLoadedLevel", out object  playerLoadedLevel))
+            {
+                if ((bool)playerLoadedLevel)
+                {
+                    continue;
+                }
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        //if (!PhotonNetwork.IsMasterClient)
+        //{
+        //    return;
+        //}
+
+        if (changedProps.ContainsKey("PlayerLoadedLevel"))
+        {
+            if (CheckAllPlayerLoadedLevel())
+            {
+                UIManager.Instance.PreGameUISection.GetComponent<PreGameUI>().StartCountDown();
+            }
+            else
+            {
+                //UIManager.Instance.PreGameUISection.GetComponent<PreGameUI>().infoText.text = "Other players are waiting...";
+            }
+        }
+
+    }
     public void EditHitPlayers(GameObject player, TeamID ballTeamID)
     {
         // Give points to the team that has the teamID of the ball that hit the player.
         if (player.GetComponent<PlayerAttribute>().teamID != (int)ballTeamID)
         {
+            //ScoreBoard.Instance.SetScore(ballTeamID, 1);
+            //ScoreBoard.Instance.pw.RPC("SetScore", RpcTarget.AllBuffered, ballTeamID, 1);
             ScoreBoard.Instance.SetScore(ballTeamID, 1);
+            
         }
         // If the player is hit by the ball with his teamID, do nothing.
         else
         {
             Debug.Log("Kendi topun vurdu seni");
         }
+        player.GetComponent<FirstPersonMovement>().playerManage.Die();
         //player.GetComponent<FirstPersonMovement>().ResetAnimator();
-         player.GetComponentInChildren<PersonalCanvas>().DeadSectionOn(); // Activate player dead canvas.
-        GeneratePlayers(player);
+        //player.GetComponentInChildren<PersonalCanvas>().DeadSectionOn(); // Activate player dead canvas.
+        //GeneratePlayers(player);
         //player.transform.position = spawnPoints[player.GetComponent<Player>().teamID].transform.position + Vector3.up; // Relocate the player in Spawn.
-        //player.GetComponent<Player>().isDead = true;
-        StartCoroutine(Respawn(player)); 
-    }
 
-    // Allow dead characters to play again after waiting a respawnTime.
-    IEnumerator Respawn(GameObject player)
-    {
-        yield return new WaitForSeconds(respawnTime);
-        player.GetComponent<PlayerAttribute>().isDead = false;
-        player.GetComponentInChildren<PersonalCanvas>().DeadSectionOff(); // Deactivate player dead canvas.
+        //StartCoroutine(Respawn(player)); 
     }
 
     // Execute before the game start.
-    void GeneratePlayers(GameObject player) // Everybody spawn their base and dont move until game start.
+    public Vector3 GeneratePlayers(int teamID) // Everybody spawn their base and dont move until game start.
     {
-        player.transform.position = spawnPoints[player.GetComponent<PlayerAttribute>().teamID].transform.position + Vector3.up * 2;
-        player.GetComponent<PlayerAttribute>().isDead = true;
+        Collider spawnCollider = spawnPoints[teamID].GetComponent<BoxCollider>();
+        Vector3 randomPoint = new Vector3(Random.Range(spawnCollider.bounds.min.x, spawnCollider.bounds.max.x), 0f, Random.Range(spawnCollider.bounds.min.z, spawnCollider.bounds.max.z));
+        Ray ray = new Ray(new Vector3(randomPoint.x, spawnCollider.bounds.max.y + 10f, randomPoint.z), Vector3.down);
+        
+        if (spawnCollider.Raycast(ray, out RaycastHit hit, 20f))
+        {
+            randomPoint = hit.point;
+        }
+
+        return randomPoint + Vector3.up * 2;
+        //player.GetComponent<PlayerAttribute>().isDead = true;
     }
 
     // Execute when the game start.
@@ -90,22 +168,24 @@ public class GameManagerr : MonoBehaviour
     }
 
     // Add newly created balls to the ball list.
-    public void AddBallList(Ball ball1, Ball ball2)
+    [PunRPC]
+    public void AddBallList(int ball1)
     {
         ballList.Add(ball1);
-        ballList.Add(ball2);
     }
 
     // The balls destroyed by the characters are removed from the ball list.
-    public void RemoveBallList(Ball ball)
+    [PunRPC]
+    public void RemoveBallList(int ball)
     {
         ballList.Remove(ball);
-        GenerateAbility(ball.transform);
-        CheckGameEnd();
+         //pw.RPC("GenerateAbility", RpcTarget.All, ball.transform);
+         //GenerateAbility(ball.transform);
     }
 
     // Create the ability balls in the game area.
-    public void GenerateAbility(Transform ballTransform)
+    [PunRPC]
+    public void GenerateAbility(Vector3 ballTransform)
     {
         int abilityPossibility = Random.Range(0, 101);
 
@@ -113,15 +193,18 @@ public class GameManagerr : MonoBehaviour
         if (abilityPossibility < abilityPercentage)
         {
             int randomNumber = Random.Range(0, abilities.Count);
-            Instantiate(abilities[randomNumber], ballTransform.position, Quaternion.identity);
+            PhotonNetwork.InstantiateRoomObject(abilities[randomNumber].name, ballTransform, Quaternion.identity, 0);
         }
     }
 
+    [PunRPC]
     public void CheckGameEnd()
     {
         if (ballList.Count <= 0)
         {
             isGameEnd = true;
+            UIManager.Instance.GameUISection.gameObject.SetActive(false);
+            UIManager.Instance.GameEndUISection.gameObject.SetActive(true);
         }
     }
 }

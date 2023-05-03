@@ -8,16 +8,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 #if UNITY_EDITOR
     using UnityEditor;
     using System.Net;
 #endif
 
-public class FirstPersonController : MonoBehaviour
+public class FirstPersonController : MonoBehaviourPunCallbacks
 {
     private Rigidbody rb;
-
+    PhotonView pw;
     #region Camera Movement Variables
 
     public Camera playerCamera;
@@ -133,10 +134,14 @@ public class FirstPersonController : MonoBehaviour
 
     private void Awake()
     {
+
         rb = GetComponent<Rigidbody>();
-
+        pw = GetComponent<PhotonView>();
         crosshairObject = GetComponentInChildren<Image>();
-
+        if (!pw.IsMine)
+        {
+            playerCamera.enabled = false;
+        }
         // Set internal variables
         playerCamera.fieldOfView = fov;
         originalScale = transform.localScale;
@@ -153,7 +158,7 @@ public class FirstPersonController : MonoBehaviour
     {
         if(lockCursor)
         {
-            Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.lockState = CursorLockMode.Locked;
         }
 
         if(crosshair)
@@ -202,243 +207,251 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-        #region Camera
-
-        // Control camera movement
-        if(cameraCanMove)
+        if (pw.IsMine)
         {
-            yaw = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * mouseSensitivity;
+            #region Camera
 
-            if (!invertCamera)
+            // Control camera movement
+            if (cameraCanMove)
             {
-                pitch -= mouseSensitivity * Input.GetAxis("Mouse Y");
-            }
-            else
-            {
-                // Inverted Y
-                pitch += mouseSensitivity * Input.GetAxis("Mouse Y");
-            }
+                yaw = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * mouseSensitivity;
 
-            // Clamp pitch between lookAngle
-            pitch = Mathf.Clamp(pitch, -maxLookAngle, maxLookAngle);
-
-            transform.localEulerAngles = new Vector3(0, yaw, 0);
-            playerCamera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
-        }
-
-        #region Camera Zoom
-
-        if (enableZoom)
-        {
-            // Changes isZoomed when key is pressed
-            // Behavior for toogle zoom
-            if(Input.GetKeyDown(zoomKey) && !holdToZoom && !isSprinting)
-            {
-                if (!isZoomed)
+                if (!invertCamera)
                 {
-                    isZoomed = true;
+                    pitch -= mouseSensitivity * Input.GetAxis("Mouse Y");
                 }
                 else
                 {
-                    isZoomed = false;
+                    // Inverted Y
+                    pitch += mouseSensitivity * Input.GetAxis("Mouse Y");
                 }
+
+                // Clamp pitch between lookAngle
+                pitch = Mathf.Clamp(pitch, -maxLookAngle, maxLookAngle);
+
+                transform.localEulerAngles = new Vector3(0, yaw, 0);
+                playerCamera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
             }
 
-            // Changes isZoomed when key is pressed
-            // Behavior for hold to zoom
-            if(holdToZoom && !isSprinting)
+            #region Camera Zoom
+
+            if (enableZoom)
             {
-                if(Input.GetKeyDown(zoomKey))
+                // Changes isZoomed when key is pressed
+                // Behavior for toogle zoom
+                if (Input.GetKeyDown(zoomKey) && !holdToZoom && !isSprinting)
                 {
-                    isZoomed = true;
-                }
-                else if(Input.GetKeyUp(zoomKey))
-                {
-                    isZoomed = false;
-                }
-            }
-
-            // Lerps camera.fieldOfView to allow for a smooth transistion
-            if(isZoomed)
-            {
-                playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, zoomFOV, zoomStepTime * Time.deltaTime);
-            }
-            else if(!isZoomed && !isSprinting)
-            {
-                playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, fov, zoomStepTime * Time.deltaTime);
-            }
-        }
-
-        #endregion
-        #endregion
-
-        #region Sprint
-
-        if(enableSprint)
-        {
-            if(isSprinting)
-            {
-                isZoomed = false;
-                playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, sprintFOV, sprintFOVStepTime * Time.deltaTime);
-
-                // Drain sprint remaining while sprinting
-                if(!unlimitedSprint)
-                {
-                    sprintRemaining -= 1 * Time.deltaTime;
-                    if (sprintRemaining <= 0)
+                    if (!isZoomed)
                     {
-                        isSprinting = false;
-                        isSprintCooldown = true;
+                        isZoomed = true;
+                    }
+                    else
+                    {
+                        isZoomed = false;
                     }
                 }
-            }
-            else
-            {
-                // Regain sprint while not sprinting
-                sprintRemaining = Mathf.Clamp(sprintRemaining += 1 * Time.deltaTime, 0, sprintDuration);
-            }
 
-            // Handles sprint cooldown 
-            // When sprint remaining == 0 stops sprint ability until hitting cooldown
-            if(isSprintCooldown)
-            {
-                sprintCooldown -= 1 * Time.deltaTime;
-                if (sprintCooldown <= 0)
+                // Changes isZoomed when key is pressed
+                // Behavior for hold to zoom
+                if (holdToZoom && !isSprinting)
                 {
-                    isSprintCooldown = false;
+                    if (Input.GetKeyDown(zoomKey))
+                    {
+                        isZoomed = true;
+                    }
+                    else if (Input.GetKeyUp(zoomKey))
+                    {
+                        isZoomed = false;
+                    }
+                }
+
+                // Lerps camera.fieldOfView to allow for a smooth transistion
+                if (isZoomed)
+                {
+                    playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, zoomFOV, zoomStepTime * Time.deltaTime);
+                }
+                else if (!isZoomed && !isSprinting)
+                {
+                    playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, fov, zoomStepTime * Time.deltaTime);
                 }
             }
-            else
+
+            #endregion
+            #endregion
+
+            #region Sprint
+
+            if (enableSprint)
             {
-                sprintCooldown = sprintCooldownReset;
+                if (isSprinting)
+                {
+                    isZoomed = false;
+                    playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, sprintFOV, sprintFOVStepTime * Time.deltaTime);
+
+                    // Drain sprint remaining while sprinting
+                    if (!unlimitedSprint)
+                    {
+                        sprintRemaining -= 1 * Time.deltaTime;
+                        if (sprintRemaining <= 0)
+                        {
+                            isSprinting = false;
+                            isSprintCooldown = true;
+                        }
+                    }
+                }
+                else
+                {
+                    // Regain sprint while not sprinting
+                    sprintRemaining = Mathf.Clamp(sprintRemaining += 1 * Time.deltaTime, 0, sprintDuration);
+                }
+
+                // Handles sprint cooldown 
+                // When sprint remaining == 0 stops sprint ability until hitting cooldown
+                if (isSprintCooldown)
+                {
+                    sprintCooldown -= 1 * Time.deltaTime;
+                    if (sprintCooldown <= 0)
+                    {
+                        isSprintCooldown = false;
+                    }
+                }
+                else
+                {
+                    sprintCooldown = sprintCooldownReset;
+                }
+
+                // Handles sprintBar 
+                if (useSprintBar && !unlimitedSprint)
+                {
+                    float sprintRemainingPercent = sprintRemaining / sprintDuration;
+                    sprintBar.transform.localScale = new Vector3(sprintRemainingPercent, 1f, 1f);
+                }
             }
 
-            // Handles sprintBar 
-            if(useSprintBar && !unlimitedSprint)
+            #endregion
+
+            #region Jump
+
+            // Gets input and calls jump method
+            if (enableJump && Input.GetKeyDown(jumpKey) && isGrounded)
             {
-                float sprintRemainingPercent = sprintRemaining / sprintDuration;
-                sprintBar.transform.localScale = new Vector3(sprintRemainingPercent, 1f, 1f);
+                Jump();
+            }
+
+            #endregion
+
+            #region Crouch
+
+            if (enableCrouch)
+            {
+                if (Input.GetKeyDown(crouchKey) && !holdToCrouch)
+                {
+                    Crouch();
+                }
+
+                if (Input.GetKeyDown(crouchKey) && holdToCrouch)
+                {
+                    isCrouched = false;
+                    Crouch();
+                }
+                else if (Input.GetKeyUp(crouchKey) && holdToCrouch)
+                {
+                    isCrouched = true;
+                    Crouch();
+                }
+            }
+
+            #endregion
+
+            CheckGround();
+
+            if (enableHeadBob)
+            {
+                HeadBob();
             }
         }
 
-        #endregion
-
-        #region Jump
-
-        // Gets input and calls jump method
-        if(enableJump && Input.GetKeyDown(jumpKey) && isGrounded)
-        {
-            Jump();
-        }
-
-        #endregion
-
-        #region Crouch
-
-        if (enableCrouch)
-        {
-            if(Input.GetKeyDown(crouchKey) && !holdToCrouch)
-            {
-                Crouch();
-            }
-            
-            if(Input.GetKeyDown(crouchKey) && holdToCrouch)
-            {
-                isCrouched = false;
-                Crouch();
-            }
-            else if(Input.GetKeyUp(crouchKey) && holdToCrouch)
-            {
-                isCrouched = true;
-                Crouch();
-            }
-        }
-
-        #endregion
-
-        CheckGround();
-
-        if(enableHeadBob)
-        {
-            HeadBob();
-        }
     }
 
     void FixedUpdate()
     {
-        #region Movement
-
-        if (playerCanMove)
+        if (pw.IsMine)
         {
-            // Calculate how fast we should be moving
-            Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            #region Movement
 
-            // Checks if player is walking and isGrounded
-            // Will allow head bob
-            if (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded)
+            if (playerCanMove)
             {
-                isWalking = true;
-            }
-            else
-            {
-                isWalking = false;
-            }
+                // Calculate how fast we should be moving
+                Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-            // All movement calculations shile sprint is active
-            if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
-            {
-                targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed;
-
-                // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.velocity;
-                Vector3 velocityChange = (targetVelocity - velocity);
-                velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-                velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                velocityChange.y = 0;
-
-                // Player is only moving when valocity change != 0
-                // Makes sure fov change only happens during movement
-                if (velocityChange.x != 0 || velocityChange.z != 0)
+                // Checks if player is walking and isGrounded
+                // Will allow head bob
+                if (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded)
                 {
-                    isSprinting = true;
-
-                    if (isCrouched)
-                    {
-                        Crouch();
-                    }
-
-                    if (hideBarWhenFull && !unlimitedSprint)
-                    {
-                        sprintBarCG.alpha += 5 * Time.deltaTime;
-                    }
+                    isWalking = true;
+                }
+                else
+                {
+                    isWalking = false;
                 }
 
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
-            }
-            // All movement calculations while walking
-            else
-            {
-                isSprinting = false;
-
-                if (hideBarWhenFull && sprintRemaining == sprintDuration)
+                // All movement calculations shile sprint is active
+                if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
                 {
-                    sprintBarCG.alpha -= 3 * Time.deltaTime;
+                    targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed;
+
+                    // Apply a force that attempts to reach our target velocity
+                    Vector3 velocity = rb.velocity;
+                    Vector3 velocityChange = (targetVelocity - velocity);
+                    velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+                    velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+                    velocityChange.y = 0;
+
+                    // Player is only moving when valocity change != 0
+                    // Makes sure fov change only happens during movement
+                    if (velocityChange.x != 0 || velocityChange.z != 0)
+                    {
+                        isSprinting = true;
+
+                        if (isCrouched)
+                        {
+                            Crouch();
+                        }
+
+                        if (hideBarWhenFull && !unlimitedSprint)
+                        {
+                            sprintBarCG.alpha += 5 * Time.deltaTime;
+                        }
+                    }
+
+                    rb.AddForce(velocityChange, ForceMode.VelocityChange);
                 }
+                // All movement calculations while walking
+                else
+                {
+                    isSprinting = false;
 
-                targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed;
+                    if (hideBarWhenFull && sprintRemaining == sprintDuration)
+                    {
+                        sprintBarCG.alpha -= 3 * Time.deltaTime;
+                    }
 
-                // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.velocity;
-                Vector3 velocityChange = (targetVelocity - velocity);
-                velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-                velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                velocityChange.y = 0;
+                    targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed;
 
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
+                    // Apply a force that attempts to reach our target velocity
+                    Vector3 velocity = rb.velocity;
+                    Vector3 velocityChange = (targetVelocity - velocity);
+                    velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+                    velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+                    velocityChange.y = 0;
+
+                    rb.AddForce(velocityChange, ForceMode.VelocityChange);
+                }
             }
+
+            #endregion
         }
 
-        #endregion
     }
 
     // Sets isGrounded based on a raycast sent straigth down from the player object

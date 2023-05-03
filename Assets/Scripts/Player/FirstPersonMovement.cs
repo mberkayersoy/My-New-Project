@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Photon.Pun;
 
-public class FirstPersonMovement : MonoBehaviour
+public class FirstPersonMovement : MonoBehaviourPun, IPunObservable
 {
-
+    PhotonView pw;
+    public PlayerManage playerManage;
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
     public bool Grounded = true;
 
     [Tooltip("Useful for rough ground")]
-    public float GroundedOffset = -0.14f;
+    public float GroundedOffset = 1;
 
     [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
     public float GroundedRadius = 0.28f;
@@ -59,14 +61,14 @@ public class FirstPersonMovement : MonoBehaviour
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
     [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
-    private bool _rotateOnMove = true;
     public new Camera camera;
-    private float rotationVelocity;
     private float verticalVelocity;
     private float terminalVelocity = 53.0f;
 
     [Tooltip("For locking the camera position on all axis")]
     public bool LockCameraPosition = false;
+    private Vector3 characterPosition;
+    private Quaternion characterRotation;
 
     private void Start()
     {
@@ -76,6 +78,9 @@ public class FirstPersonMovement : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         hasAnimator = TryGetComponent(out animator);
         AssignAnimationIDs();
+        pw = GetComponent<PhotonView>();
+        playerManage = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<PlayerManage>();
+
 
         // reset our timeouts on start
         jumpTimeoutDelta = JumpTimeout;
@@ -83,17 +88,24 @@ public class FirstPersonMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (!player.isDead)
+        if (!pw.IsMine) 
         {
-            JumpAndGravity();
-            Move();
+            return;
         }
-        else
-        {
+        characterPosition = transform.position;
+            characterRotation = transform.rotation;
+            if (!player.isDead)
+            {
+                
+                JumpAndGravity();
+                Move();
+            }
+            else
+            {
 
-            ResetAnimator();
-            //Debug.Log("animationBlend: " + animationBlend);
-        }
+                //ResetAnimator();
+                //Debug.Log("animationBlend: " + animationBlend);
+            }
 
     }
     private void Update()
@@ -105,6 +117,7 @@ public class FirstPersonMovement : MonoBehaviour
     {
         //CameraRotation();
     }
+    [PunRPC]
     private void Move()
     {
         // set target speed based on move speed, sprint speed and if sprint is pressed
@@ -151,8 +164,8 @@ public class FirstPersonMovement : MonoBehaviour
         {
             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                               camera.transform.eulerAngles.y;
-            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref rotationVelocity,
-                0.125f);
+            //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref rotationVelocity,
+            //    0.125f);
 
             //rotate to face input direction relative to camera position
             //if (_rotateOnMove)
@@ -177,6 +190,7 @@ public class FirstPersonMovement : MonoBehaviour
             animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
         }
     }
+
     private void AssignAnimationIDs()
     {
         _animIDSpeed = Animator.StringToHash("Speed");
@@ -184,7 +198,9 @@ public class FirstPersonMovement : MonoBehaviour
         _animIDJump = Animator.StringToHash("Jump");
         _animIDFreeFall = Animator.StringToHash("FreeFall");
         _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+
     }
+    [PunRPC]
     private void JumpAndGravity()
     {
         if (Grounded)
@@ -249,8 +265,9 @@ public class FirstPersonMovement : MonoBehaviour
         {
             verticalVelocity += Gravity * Time.deltaTime;
         }
-    }
 
+    }
+    [PunRPC]
     private void GroundedCheck()
     {
         // set sphere position, with offset
@@ -278,6 +295,7 @@ public class FirstPersonMovement : MonoBehaviour
             GroundedRadius);
 
     }
+    [PunRPC]
     private void OnLand(AnimationEvent animationEvent)
     {
         if (animationEvent.animatorClipInfo.weight > 0.5f)
@@ -285,7 +303,7 @@ public class FirstPersonMovement : MonoBehaviour
             AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
         }
     }
-
+    [PunRPC]
     private void OnFootstep(AnimationEvent animationEvent)
     {
         if (animationEvent.animatorClipInfo.weight > 0.5f)
@@ -297,19 +315,7 @@ public class FirstPersonMovement : MonoBehaviour
             }
         }
     }
-
-    public void SetRotateOnMove(bool newRotateOnMove)
-    {
-        _rotateOnMove = newRotateOnMove;
-    }
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Ball"))
-    //    {
-    //        GameManager.Instance.EditHitPlayers(this.gameObject, collision.gameObject.GetComponent<Ball>().ballTeamID);
-    //    }
-    //}
+    [PunRPC]
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.CompareTag("Ball"))
@@ -317,7 +323,7 @@ public class FirstPersonMovement : MonoBehaviour
             GameManagerr.Instance.EditHitPlayers(this.gameObject, hit.gameObject.GetComponent<Ball>().ballTeamID);
         }
     }
-
+    [PunRPC]
     public void ResetAnimator()
     {
         animator.SetFloat(_animIDSpeed, 0);
@@ -329,4 +335,17 @@ public class FirstPersonMovement : MonoBehaviour
         fallTimeoutDelta = FallTimeout;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(characterPosition);
+            stream.SendNext(characterRotation);
+        }
+        else
+        {
+            characterPosition = (Vector3)stream.ReceiveNext();
+            characterRotation = (Quaternion)stream.ReceiveNext();
+        }
+    }
 }
