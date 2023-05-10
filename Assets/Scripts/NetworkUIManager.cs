@@ -13,6 +13,15 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public GameObject loginPanel;
     public TMP_InputField usernameInput;
 
+    [Header("Register Panel")]
+
+    public GameObject registerPanel;
+    public TMP_InputField registerEmailInput;
+    public TMP_InputField registerUsernameInput;
+    public TMP_InputField registerPasswordInput;
+    public TMP_InputField registerConfirmPasswordInput;
+    public Button createAccountButton;
+
     [Header("Choice Panel")]
     public GameObject choicePanel;
 
@@ -373,6 +382,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         randomRoomJoinPanel.SetActive(activePanel.Equals(randomRoomJoinPanel.name));
         roomlistPanel.SetActive(activePanel.Equals(roomlistPanel.name));
         insideRoomPanel.SetActive(activePanel.Equals(insideRoomPanel.name));
+        registerPanel.SetActive(activePanel.Equals(registerPanel.name));
     }
 
     private void UpdateCachedRoomList(List<RoomInfo> roomList)
