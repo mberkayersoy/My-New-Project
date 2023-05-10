@@ -33,7 +33,7 @@ public class GameManagerr : MonoBehaviourPunCallbacks
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
     }
 
     public GameObject[] spawnPoints;
@@ -203,6 +203,8 @@ public class GameManagerr : MonoBehaviourPunCallbacks
         if (ballList.Count <= 0)
         {
             isGameEnd = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             UIManager.Instance.GameUISection.gameObject.SetActive(false);
             UIManager.Instance.GameEndUISection.gameObject.SetActive(true);
         }

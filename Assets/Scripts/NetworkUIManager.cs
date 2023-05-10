@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 {
@@ -40,6 +41,15 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     private Dictionary<string, GameObject> roomlistElements;
     private Dictionary<int, GameObject> playerlistElements;
 
+    [Header("Loading Panel")]
+    public GameObject LoadingPanel;
+    public RawImage LoadingImage;
+    public TextMeshProUGUI ConnectinStateText;
+
+    [Header("CHAT System")]
+    public GameObject ChatSistemi;
+    public ChatGui chatgui;
+
     public void Awake()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -50,14 +60,18 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
     public override void OnConnectedToMaster()
     {
-        SetActivePanel(choicePanel.name);
+        LoadingImage.transform.DOKill();
+        LoadingPanel.SetActive(false);
+        ConnectinStateText.text = "Connected";
         PhotonNetwork.AutomaticallySyncScene = true;
+        SetActivePanel(choicePanel.name);
     }
 
     public override void OnJoinedLobby()
     {
         roomCacheList.Clear();
         ClearRoomListView();
+        ConnectinStateText.text = "Connecting to Lobby";
     }
 
     public override void OnLeftLobby()
@@ -86,6 +100,19 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
     public override void OnJoinedRoom()
     {
+        // Chat sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
+        ChatSistemi.SetActive(true);
+        chatgui = FindObjectOfType<ChatGui>();
+        chatgui.UserNickName = PhotonNetwork.LocalPlayer.NickName;
+        chatgui.RoomName = PhotonNetwork.CurrentRoom.Name;
+        chatgui.Connect();
+
+        //// Ses sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
+        //VoiceSistemi.SetActive(true);
+        //voice = FindObjectOfType<voicesistemi>();
+        //voice.KullaniciAdi = PhotonNetwork.LocalPlayer.NickName;
+        //voice.Odadi = PhotonNetwork.CurrentRoom.Name;
+
         roomCacheList.Clear();
 
         SetActivePanel(insideRoomPanel.name);
@@ -131,6 +158,8 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
     public override void OnLeftRoom()
     {
+        ChatSistemi.SetActive(false);
+        //VoiceSistemi.SetActive(false);
         SetActivePanel(choicePanel.name);
 
         foreach (GameObject entry in playerlistElements.Values)
@@ -241,6 +270,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
     public void OnLeaveGameButtonClicked()
     {
+        ChatSistemi.SetActive(false);
         PhotonNetwork.LeaveRoom();
     }
 
@@ -252,6 +282,9 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         {
             PhotonNetwork.LocalPlayer.NickName = playerName;
             PhotonNetwork.ConnectUsingSettings();
+            LoadingPanel.SetActive(true);
+            LoadingImage.transform.DORotate(new Vector3(0f, 0f, -360f), 0.5f, RotateMode.FastBeyond360).SetLoops(-1); ;
+            ConnectinStateText.text = "Connecting...";
         }
         else
         {
@@ -369,10 +402,6 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
     private void UpdateRoomListView()
     {
-        //float x = 0;
-        //float y = 345;
-        //float z = 0;
-        //float spacing = 120;
         foreach (RoomInfo info in roomCacheList.Values)
         {
             GameObject entry = Instantiate(roomlistRowPrefab);//, roomlistContent.transform.localPosition + new Vector3(x, y, z), Quaternion.identity, roomlistContent.transform);
@@ -382,8 +411,6 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
             entry.GetComponent<UIRoomListEntry>().Initialize(info.Name, (byte)info.PlayerCount, info.MaxPlayers, (info.MaxPlayers == info.PlayerCount));
 
             roomlistElements.Add(info.Name, entry);
-
-            //y -= spacing;
         }
     }
 }

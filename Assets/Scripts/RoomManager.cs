@@ -10,6 +10,7 @@ using System.IO;
 /// </summary>
 public class RoomManager : MonoBehaviourPunCallbacks
 {
+    PlayerManage playerManage;
     /// <summary>
     /// Singleton instance
     /// </summary>
@@ -24,6 +25,11 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
         SceneManager.sceneLoaded += OnSceneLoaded;
+        //if (playerManage.photonView.IsMine)
+        //{
+            playerManage = FindObjectOfType<PlayerManage>();
+        //}
+
     }
 
     /// <summary>
@@ -44,7 +50,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         if (scene.buildIndex == 1)
         {
-            PhotonNetwork.Instantiate("PlayerManage", Vector3.zero, Quaternion.identity);
+
+            //PhotonNetwork.Instantiate("PlayerManage", Vector3.zero, Quaternion.identity);
         }
     }
 

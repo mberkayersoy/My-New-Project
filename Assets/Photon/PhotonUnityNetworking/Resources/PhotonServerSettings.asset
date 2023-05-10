@@ -15,7 +15,7 @@ MonoBehaviour:
   AppSettings:
     AppIdRealtime: 9bd5ce4f-9285-4951-9833-bf1c1729013e
     AppIdFusion: 
-    AppIdChat: 
+    AppIdChat: 5d6b0fa7-928d-4593-bd11-d25ed60e8806
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
@@ -74,5 +74,5 @@ MonoBehaviour:
   - SetParent
   - CheckGameEnd
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 1

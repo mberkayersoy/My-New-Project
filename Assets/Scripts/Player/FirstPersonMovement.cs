@@ -79,7 +79,7 @@ public class FirstPersonMovement : MonoBehaviourPun, IPunObservable
         hasAnimator = TryGetComponent(out animator);
         AssignAnimationIDs();
         pw = GetComponent<PhotonView>();
-        playerManage = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<PlayerManage>();
+        playerManage = playerManage = FindObjectOfType<PlayerManage>();//PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<PlayerManage>();
 
 
         // reset our timeouts on start

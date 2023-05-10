@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using UnityEngine.SceneManagement;
 
-public class GameEndUI : MonoBehaviour
+public class GameEndUI : MonoBehaviourPunCallbacks
 {
     private TextMeshProUGUI winnerDisplay;
     private void Start()
@@ -17,5 +19,9 @@ public class GameEndUI : MonoBehaviour
     {
         winnerDisplay.text = "WINNER" + "\n" + ScoreBoard.Instance.GetWinners().ToString();
         winnerDisplay.color = TeamColor.GetTeamColor(ScoreBoard.Instance.GetWinners());
+    }
+    public void ReturnLobby()
+    {
+        SceneManager.LoadScene("Login");
     }
 }
