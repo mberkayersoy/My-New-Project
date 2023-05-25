@@ -13,13 +13,13 @@ public class PlayerManage : MonoBehaviour
     public GameObject controller;
     public TextMeshProUGUI InfoText;
 
-    [Header("OYUNCU LÝSTESÝ")]
-    public GameObject PlayersListPanel;
-    public TextMeshProUGUI PlayerListText;
+    //[Header("OYUNCU LÝSTESÝ")]
+    //public GameObject PlayersListPanel;
+    //public TextMeshProUGUI PlayerListText;
 
-    [Header("CHAT SÝSTEMÝ")]
-    public GameObject ChatSistemi;
-    public ChatGui chatgui;
+    //[Header("CHAT SÝSTEMÝ")]
+    //public GameObject ChatSistemi;
+    //public ChatGui chatgui;
 
 
     public void Die()
@@ -36,54 +36,54 @@ public class PlayerManage : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Tab))
-        {
-            PlayersListPanel.SetActive(true);
-            PlayerListText.text = "";
+        //if (Input.GetKey(KeyCode.Tab))
+        //{
+        //    PlayersListPanel.SetActive(true);
+        //    PlayerListText.text = "";
 
-            foreach (Player p in PhotonNetwork.PlayerList)
-            {
-                if (p.IsMasterClient)
-                    PlayerListText.text += p.NickName + " - Owner \n";
-                else
-                    PlayerListText.text += p.NickName + " \n";
-            }
-        }
-        else
-        {
-            PlayersListPanel.SetActive(false);
-        }
+        //    foreach (Player p in PhotonNetwork.PlayerList)
+        //    {
+        //        if (p.IsMasterClient)
+        //            PlayerListText.text += p.NickName + " - Owner \n";
+        //        else
+        //            PlayerListText.text += p.NickName + " \n";
+        //    }
+        //}
+        //else
+        //{
+        //    PlayersListPanel.SetActive(false);
+        //}
 
 
 
-        if (chatgui.isChatPanelOpen)
-        {
-            controller.GetComponent<PlayerAttribute>().isDead = true;
-        }
-        else
-        {
-            controller.GetComponent<PlayerAttribute>().isDead = false;
-        }
+        //if (chatgui.isChatPanelOpen)
+        //{
+        //    controller.GetComponent<PlayerAttribute>().isDead = true;
+        //}
+        //else
+        //{
+        //    controller.GetComponent<PlayerAttribute>().isDead = false;
+        //}
     }
 
-    private void StartGame()
-    {
-        // Chat sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
+    //private void StartGame()
+    //{
+    //    // Chat sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
 
-        ChatSistemi.SetActive(true);
-        chatgui.UserNickName = PhotonNetwork.LocalPlayer.NickName;
-        chatgui.RoomName = PhotonNetwork.CurrentRoom.Name;
-        chatgui.Connect();
-        // Chat sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
+    //    ChatSistemi.SetActive(true);
+    //    chatgui.UserNickName = PhotonNetwork.LocalPlayer.NickName;
+    //    chatgui.RoomName = PhotonNetwork.CurrentRoom.Name;
+    //    chatgui.Connect();
+    //    // Chat sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
 
-        // Ses sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
-        //VoiceSistemi.SetActive(true);
-        //voice = FindObjectOfType<voicesistemi>();
-        //voice.KullaniciAdi = PhotonNetwork.LocalPlayer.NickName;
-        //voice.Odadi = PhotonNetwork.CurrentRoom.Name;
-        // Ses sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
-        //GeriSayimSayacPaneli.SetActive(false);
-    }
+    //    // Ses sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
+    //    //VoiceSistemi.SetActive(true);
+    //    //voice = FindObjectOfType<voicesistemi>();
+    //    //voice.KullaniciAdi = PhotonNetwork.LocalPlayer.NickName;
+    //    //voice.Odadi = PhotonNetwork.CurrentRoom.Name;
+    //    // Ses sistemine kullanýcý adý ve oda adýný gönderiyoruz ve iletiþimi baþlatýyoruz
+    //    //GeriSayimSayacPaneli.SetActive(false);
+    //}
     void Start()
     {
         //if (photonView.IsMine)
@@ -92,7 +92,7 @@ public class PlayerManage : MonoBehaviour
         //    StartGame();
         //}
         CreateController();
-        StartGame();
+        //StartGame();
     }
     void CreateController()
     {
@@ -112,6 +112,8 @@ public class PlayerManage : MonoBehaviour
                 break;
 
         }
+        controller.GetComponent<PlayerAttribute>().isDead = true;
+        StartCoroutine(Respawn(controller));
         //controller = PhotonNetwork.Instantiate("Capsule", Vector3.up, Quaternion.identity, 0, new object[] { photonView.ViewID });
         //controller.transform.position = GameManagerr.Instance.GeneratePlayers(controller);
         //GameManagerr.Instance.GeneratePlayers(controller);

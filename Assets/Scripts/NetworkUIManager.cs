@@ -6,12 +6,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using System.Threading.Tasks;
 
 public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 {
+    public static NetworkUIManager Instance;
+
     [Header("Login Panel")]
     public GameObject loginPanel;
     public TMP_InputField usernameInput;
+    public GameObject UIBubblesPrefab;
+    public GameObject UIBubblesObject;
 
     [Header("Register Panel")]
 
@@ -58,12 +63,29 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     [Header("CHAT System")]
     public GameObject ChatSistemi;
     public ChatGui chatgui;
+    public bool continueFromChoicePanel = true;
+
+    [Header("GamePanel")]
+    public GameObject gamePanel;
+    public GameManagerr gameManagerr;
+    public Camera menuCamera;
+    public GameObject controller;
+    public GameObject playerManage;
 
     public void Awake()
     {
+        if (Instance)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        DontDestroyOnLoad(gameObject);
+        Instance = this;
+
         PhotonNetwork.AutomaticallySyncScene = true;
         roomCacheList = new Dictionary<string, RoomInfo>();
-        roomlistElements = new Dictionary<string, GameObject>();    
+        roomlistElements = new Dictionary<string, GameObject>();
+        UIBubblesObject = Instantiate(UIBubblesPrefab);
     }
 
 
@@ -97,6 +119,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         SetActivePanel(choicePanel.name);
+
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -283,22 +306,14 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
-    public void OnLoginButtonClicked()
+    public void OnLoginButtonClicked(/*string username*/)
     {
-        string playerName = usernameInput.text;
+        PhotonNetwork.LocalPlayer.NickName = usernameInput.text;
+        PhotonNetwork.ConnectUsingSettings();
+        LoadingPanel.SetActive(true);
+        LoadingImage.transform.DORotate(new Vector3(0f, 0f, -360f), 0.5f, RotateMode.FastBeyond360).SetLoops(-1); ;
+        ConnectinStateText.text = "Connecting...";
 
-        if (!playerName.Equals(""))
-        {
-            PhotonNetwork.LocalPlayer.NickName = playerName;
-            PhotonNetwork.ConnectUsingSettings();
-            LoadingPanel.SetActive(true);
-            LoadingImage.transform.DORotate(new Vector3(0f, 0f, -360f), 0.5f, RotateMode.FastBeyond360).SetLoops(-1); ;
-            ConnectinStateText.text = "Connecting...";
-        }
-        else
-        {
-            Debug.LogError("Username not suitable");
-        }
     }
 
     public void OnRoomListButtonClicked()
@@ -331,7 +346,13 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     {
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.CurrentRoom.IsVisible = false;
-        PhotonNetwork.LoadLevel("GameScene");
+
+        UIBubblesObject.SetActive(false);
+        PhotonNetwork.InstantiateRoomObject("GameManagerr", Vector3.zero, Quaternion.identity);
+        PhotonNetwork.InstantiateRoomObject("GamePanel", Vector3.zero, Quaternion.identity);
+        PhotonNetwork.InstantiateRoomObject("ScoreManager", Vector3.zero, Quaternion.identity);
+        GameManagerr.Instance.StartTheGame();
+        //PhotonNetwork.LoadLevel("GameScene");
     }
 
     private bool CheckPlayersReady()
@@ -383,6 +404,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         roomlistPanel.SetActive(activePanel.Equals(roomlistPanel.name));
         insideRoomPanel.SetActive(activePanel.Equals(insideRoomPanel.name));
         registerPanel.SetActive(activePanel.Equals(registerPanel.name));
+        //gamePanel.SetActive(activePanel.Equals(gamePanel.name));
     }
 
     private void UpdateCachedRoomList(List<RoomInfo> roomList)
@@ -423,4 +445,63 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
             roomlistElements.Add(info.Name, entry);
         }
     }
+    public void OnClickExitGameButton()
+    {
+        Application.Quit();
+    }
+
+    public void CreateDiedController()
+    {
+        switch (PhotonNetwork.LocalPlayer.GetTeamID())
+        {
+            case 0:
+                controller = PhotonNetwork.Instantiate("CapsuleBlue", GameManagerr.Instance.GeneratePlayers(PhotonNetwork.LocalPlayer.GetTeamID()), Quaternion.identity, 0, new object[] { photonView.ViewID });
+                break;
+            case 1:
+                controller = PhotonNetwork.Instantiate("CapsuleRed", GameManagerr.Instance.GeneratePlayers(PhotonNetwork.LocalPlayer.GetTeamID()), Quaternion.identity, 0, new object[] { photonView.ViewID });
+                break;
+            case 2:
+                controller = PhotonNetwork.Instantiate("CapsuleGreen", GameManagerr.Instance.GeneratePlayers(PhotonNetwork.LocalPlayer.GetTeamID()), Quaternion.identity, 0, new object[] { photonView.ViewID });
+                break;
+            case 3:
+                controller = PhotonNetwork.Instantiate("CapsuleYellow", GameManagerr.Instance.GeneratePlayers(PhotonNetwork.LocalPlayer.GetTeamID()), Quaternion.identity, 0, new object[] { photonView.ViewID });
+                break;
+        }
+        //controller = PhotonNetwork.Instantiate("Capsule", GameManagerr.Instance.GeneratePlayers(controller), Quaternion.identity, 0, new object[] { photonView.ViewID });
+        controller.GetComponent<PlayerAttribute>().isDead = true;
+        controller.GetComponentInChildren<PersonalCanvas>().DeadSectionOn();
+        StartCoroutine(Respawn(controller));
+    }
+
+    void CreateController()
+    {
+        switch (PhotonNetwork.LocalPlayer.GetTeamID())
+        {
+            case 0:
+                controller = PhotonNetwork.Instantiate("CapsuleBlue", GameManagerr.Instance.GeneratePlayers(PhotonNetwork.LocalPlayer.GetTeamID()), Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.GetTeamID() });
+                break;
+            case 1:
+                controller = PhotonNetwork.Instantiate("CapsuleRed", GameManagerr.Instance.GeneratePlayers(PhotonNetwork.LocalPlayer.GetTeamID()), Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.GetTeamID() });
+                break;
+            case 2:
+                controller = PhotonNetwork.Instantiate("CapsuleGreen", GameManagerr.Instance.GeneratePlayers(PhotonNetwork.LocalPlayer.GetTeamID()), Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.GetTeamID() });
+                break;
+            case 3:
+                controller = PhotonNetwork.Instantiate("CapsuleYellow", GameManagerr.Instance.GeneratePlayers(PhotonNetwork.LocalPlayer.GetTeamID()), Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.GetTeamID() });
+                break;
+
+        }
+    }
+    System.Collections.IEnumerator Respawn(GameObject controller)
+    {
+        yield return new WaitForSeconds(controller.GetComponentInChildren<PersonalCanvas>().respawnRemainingTime);
+        controller.GetComponent<PlayerAttribute>().isDead = false;
+        controller.GetComponentInChildren<PersonalCanvas>().DeadSectionOff(); // Deactivate player dead canvas.
+    }
+
+    //public void Die()
+    //{
+    //    PhotonNetwork.Destroy(controller);
+    //    CreateDiedController();
+    //}
 }

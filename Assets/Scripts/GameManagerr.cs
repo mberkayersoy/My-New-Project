@@ -33,7 +33,6 @@ public class GameManagerr : MonoBehaviourPunCallbacks
             return;
         }
         instance = this;
-        //DontDestroyOnLoad(this.gameObject);
     }
 
     public GameObject[] spawnPoints;
@@ -45,79 +44,83 @@ public class GameManagerr : MonoBehaviourPunCallbacks
     public int abilityPercentage;
     public bool isGameEnd = false;
     public PhotonView pw;
+    public GameObject playerManage;
     public void StartTheGame()
     {
+        UIManager.Instance.PreGameUISection.StartCountDown();
         if (!PhotonNetwork.IsMasterClient) return; // Only MasterClient can instantiate first ball.
 
         mainBall = PhotonNetwork.InstantiateRoomObject("Ball", Vector3.up * 40, Quaternion.identity);
         var randomVector = Random.insideUnitSphere * 25f;
         mainBall.GetComponent<Rigidbody>().AddForce(randomVector, ForceMode.Impulse);
         //ballList.Add(mainBall.GetPhotonView().ViewID);
-        pw.RPC("AddBallList", RpcTarget.All, mainBall.GetPhotonView().ViewID);
+        //pw.RPC("AddBallList", RpcTarget.All, mainBall.GetPhotonView().ViewID);
         isGameEnd = false;
     }
     private void Start()
     {
-        if (!PhotonNetwork.IsConnected) return;
+        RoomManager.Instance.PlayerCreate();
+        NetworkUIManager.Instance.menuCamera.gameObject.SetActive(false);
+        NetworkUIManager.Instance.insideRoomPanel.gameObject.SetActive(false);
+        //if (!PhotonNetwork.IsConnected) return;
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            // MasterClient bu GameManager instance'ýný Photon aðý üzerinde oluþturur.
-            PhotonNetwork.InstantiateRoomObject("GameManagerr", Vector3.zero, Quaternion.identity);
-        }
-
-        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
-        {
-            { "PlayerLoadedLevel", true} 
-        };
-        PhotonNetwork.LocalPlayer.SetCustomProperties(props)
-            ;
-        pw = GetComponent<PhotonView>();
-
-        for (int i = 0; i < spawnPoints.Length; i++)
-        {
-            spawnPoints[i].GetComponent<MeshRenderer>().material.SetColor("_Color", TeamColor.GetTeamColor((TeamID)i));
-        }
-    }
-
-    private bool CheckAllPlayerLoadedLevel()
-    {
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            if (player.CustomProperties.TryGetValue("PlayerLoadedLevel", out object  playerLoadedLevel))
-            {
-                if ((bool)playerLoadedLevel)
-                {
-                    continue;
-                }
-
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
-    {
-        //if (!PhotonNetwork.IsMasterClient)
+        //if (PhotonNetwork.IsMasterClient)
         //{
-        //    return;
+        //    // MasterClient bu GameManager instance'ýný Photon aðý üzerinde oluþturur.
+        //    PhotonNetwork.InstantiateRoomObject("GameManagerr", Vector3.zero, Quaternion.identity);
         //}
 
-        if (changedProps.ContainsKey("PlayerLoadedLevel"))
-        {
-            if (CheckAllPlayerLoadedLevel())
-            {
-                UIManager.Instance.PreGameUISection.GetComponent<PreGameUI>().StartCountDown();
-            }
-            else
-            {
-                //UIManager.Instance.PreGameUISection.GetComponent<PreGameUI>().infoText.text = "Other players are waiting...";
-            }
-        }
+        //ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        //{
+        //    { "PlayerLoadedLevel", true}
+        //};
+        //PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        pw = GetComponent<PhotonView>();
 
+        //for (int i = 0; i < spawnPoints.Length; i++)
+        //{
+        //    spawnPoints[i].GetComponent<MeshRenderer>().material.SetColor("_Color", TeamColor.GetTeamColor((TeamID)i));
+        //}
     }
+
+    //private bool CheckAllPlayerLoadedLevel()
+    //{
+    //    foreach (Player player in PhotonNetwork.PlayerList)
+    //    {
+    //        if (player.CustomProperties.TryGetValue("PlayerLoadedLevel", out object playerLoadedLevel))
+    //        {
+    //            if ((bool)playerLoadedLevel)
+    //            {
+    //                continue;
+    //            }
+
+    //            return false;
+    //        }
+    //    }
+
+    //    return true;
+    //}
+
+    //public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    //{
+    //    //if (!PhotonNetwork.IsMasterClient)
+    //    //{
+    //    //    return;
+    //    //}
+
+    //    if (changedProps.ContainsKey("PlayerLoadedLevel"))
+    //    {
+    //        if (CheckAllPlayerLoadedLevel())
+    //        {
+    //            UIManager.Instance.PreGameUISection.GetComponent<PreGameUI>().StartCountDown();
+    //        }
+    //        else
+    //        {
+    //            //UIManager.Instance.PreGameUISection.GetComponent<PreGameUI>().infoText.text = "Other players are waiting...";
+    //        }
+    //    }
+
+    //}
     public void EditHitPlayers(GameObject player, TeamID ballTeamID)
     {
         // Give points to the team that has the teamID of the ball that hit the player.
@@ -145,7 +148,7 @@ public class GameManagerr : MonoBehaviourPunCallbacks
     // Execute before the game start.
     public Vector3 GeneratePlayers(int teamID) // Everybody spawn their base and dont move until game start.
     {
-        Collider spawnCollider = spawnPoints[teamID].GetComponent<BoxCollider>();
+        Collider spawnCollider = spawnPoints[teamID].GetComponent<MeshCollider>();
         Vector3 randomPoint = new Vector3(Random.Range(spawnCollider.bounds.min.x, spawnCollider.bounds.max.x), 0f, Random.Range(spawnCollider.bounds.min.z, spawnCollider.bounds.max.z));
         Ray ray = new Ray(new Vector3(randomPoint.x, spawnCollider.bounds.max.y + 10f, randomPoint.z), Vector3.down);
         

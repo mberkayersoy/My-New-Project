@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class PreGameUI : MonoBehaviourPunCallbacks
 {
-    private TextMeshProUGUI startCountDownText;
-    readonly int startCountDown = 1;
+    public TextMeshProUGUI startCountDownText;
+    readonly int startCountDown = 3;
 
     void Start()
     {
@@ -17,7 +17,6 @@ public class PreGameUI : MonoBehaviourPunCallbacks
 
     public void StartCountDown()
     {
-
         StartCoroutine(CountDownDisplay());
     }
 
@@ -29,8 +28,6 @@ public class PreGameUI : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(1f);
         } 
         startCountDownText.text = "GO!";
-
-        GameManagerr.Instance.StartTheGame();
         //GameManagerr.Instance.pw.RPC("StartTheGame", RpcTarget.All);
         StartCoroutine(CleanUI());
     }
@@ -42,4 +39,10 @@ public class PreGameUI : MonoBehaviourPunCallbacks
         gameObject.SetActive(false);
         UIManager.Instance.GameUISection.gameObject.SetActive(true);
     }
+
+    private void OnEnable()
+    {
+        StartCountDown();
+    }
+
 }

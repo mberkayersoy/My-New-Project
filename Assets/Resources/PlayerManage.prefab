@@ -46,7 +46,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   InfoText: {fileID: 0}
-  PlayersListPanel: {fileID: 0}
-  PlayerListText: {fileID: 0}
-  ChatSistemi: {fileID: 0}
-  chatgui: {fileID: 0}

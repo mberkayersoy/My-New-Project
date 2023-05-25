@@ -60,6 +60,7 @@ namespace Photon.Realtime
         /// <summary>Only one player is controlled by each client. Others are not local.</summary>
         public readonly bool IsLocal;
 
+
         public int GetTeamID()
         {
             return teamID;

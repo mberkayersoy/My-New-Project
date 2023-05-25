@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
 
 public class GameEndUI : MonoBehaviourPunCallbacks
 {
@@ -22,6 +21,9 @@ public class GameEndUI : MonoBehaviourPunCallbacks
     }
     public void ReturnLobby()
     {
-        SceneManager.LoadScene("Login");
+        //DestroyImmediate(GameManagerr.Instance.playerManage);
+        PhotonNetwork.LeaveRoom();
+        NetworkUIManager.Instance.menuCamera.gameObject.SetActive(true);
+        NetworkUIManager.Instance.SetActivePanel(NetworkUIManager.Instance.choicePanel.name);
     }
 }

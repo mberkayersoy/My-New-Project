@@ -16743,6 +16743,7 @@ MonoBehaviour:
   UITeamColor: {fileID: 4919726206785328575}
   countdownImage: {fileID: 4919726206069302586}
   player: {fileID: 0}
+  respawnRemainingTime: 3
 --- !u!1 &4919726206720039171
 GameObject:
   m_ObjectHideFlags: 0
@@ -27381,6 +27382,7 @@ MonoBehaviour:
   raycastOrigin: {fileID: 4919726207068147987}
   raycastDestination: {fileID: 4625810416709348689}
   teamNumber: 0
+  pw: {fileID: 0}
 --- !u!114 &5384406932641951124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33044,7 +33046,7 @@ Animator:
   m_GameObject: {fileID: 5226156040245925068}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 36078ab0369161e49a29d349ae3e0739, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4547fa08cc09c194582955a42cfbcf59, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -33092,10 +33094,10 @@ MonoBehaviour:
   moveSpeed: 20
   sprintSpeed: 30
   jumpHeight: 5
-  meshMaterial: {fileID: 543373550831223620}
   teamColor: {r: 0, g: 0, b: 0, a: 0}
   isDead: 0
   currentAbility: {fileID: 0}
+  meshMaterial: {fileID: 543373550831223620}
 --- !u!114 &1525864040546653198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33108,6 +33110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97fca36bd81de7c4cafce7bbf02ca611, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerManage: {fileID: 0}
   Grounded: 1
   GroundedOffset: -0.14
   GroundedRadius: 0.28
@@ -33136,11 +33139,6 @@ MonoBehaviour:
   FootstepAudioVolume: 0.5
   camera: {fileID: 4625810415980958249}
   LockCameraPosition: 0
-  crossHairTargets:
-  - {fileID: 4919726206788851940}
-  - {fileID: 4919726206724940541}
-  - {fileID: 4919726207256674259}
-  - {fileID: 4919726206943769023}
 --- !u!114 &1525864040546653199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33156,6 +33154,7 @@ MonoBehaviour:
   turnSpeed: 15
   aimDuration: 0.2
   aimLayer: {fileID: 0}
+  pw: {fileID: 0}
 --- !u!114 &1525864040546653237
 MonoBehaviour:
   m_ObjectHideFlags: 0

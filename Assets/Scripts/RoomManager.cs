@@ -10,26 +10,26 @@ using System.IO;
 /// </summary>
 public class RoomManager : MonoBehaviourPunCallbacks
 {
-    PlayerManage playerManage;
+    public PlayerManage playerManage;
     /// <summary>
     /// Singleton instance
     /// </summary>
     public static RoomManager Instance;
 
 
+    public void PlayerCreate()
+    {
+        Instantiate(playerManage);
+    }
 
     /// <summary>
     /// Event when enabled
     /// </summary>
     public override void OnEnable()
     {
-        base.OnEnable();
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        //if (playerManage.photonView.IsMine)
-        //{
-            playerManage = FindObjectOfType<PlayerManage>();
-        //}
-
+        //base.OnEnable();
+        //SceneManager.sceneLoaded += OnSceneLoaded;
+        //playerManage = FindObjectOfType<PlayerManage>();
     }
 
     /// <summary>
@@ -37,22 +37,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
     /// </summary>
     public override void OnDisable()
     {
-        base.OnDisable();
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+        //base.OnDisable();
+        //SceneManager.sceneLoaded -= OnSceneLoaded;
 
-    /// <summary>
-    /// Event when scene loaded
-    /// </summary>
-    /// <param name="scene">Scene</param>
-    /// <param name="loadSceneMode">Load scene mode</param>
-    void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
-    {
-        if (scene.buildIndex == 1)
-        {
-
-            //PhotonNetwork.Instantiate("PlayerManage", Vector3.zero, Quaternion.identity);
-        }
     }
 
     /// <summary>

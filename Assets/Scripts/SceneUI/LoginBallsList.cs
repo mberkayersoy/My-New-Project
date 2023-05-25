@@ -7,7 +7,7 @@ using DG.Tweening;
 public class LoginBallsList : MonoBehaviour
 {
     [SerializeField] List<GameObject> bubbles;
-    [SerializeField] TextMeshProUGUI headLine;
+    //[SerializeField] TextMeshProUGUI headLine;
     public float colorChangeSpeed = 2f; 
     private float timer;
 
@@ -24,12 +24,12 @@ public class LoginBallsList : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        timer += Time.deltaTime * colorChangeSpeed;
-        float r = Mathf.Sin(timer * 1f) * 0.5f + 0.5f;
-        float g = Mathf.Sin(timer * 2f) * 0.5f + 0.5f;
-        float b = Mathf.Sin(timer * 3f) * 0.5f + 0.5f;
-        headLine.color = new Color(r, g, b);
-    }
+    //void Update()
+    //{
+    //    timer += Time.deltaTime * colorChangeSpeed;
+    //    float r = Mathf.Sin(timer * 1f) * 0.5f + 0.5f;
+    //    float g = Mathf.Sin(timer * 2f) * 0.5f + 0.5f;
+    //    float b = Mathf.Sin(timer * 3f) * 0.5f + 0.5f;
+    //    headLine.color = new Color(r, g, b);
+    //}
 }

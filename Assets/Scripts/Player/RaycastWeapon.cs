@@ -34,6 +34,11 @@ public class RaycastWeapon : MonoBehaviourPunCallbacks
         tracerEffect.startColor = TeamColor.GetTeamColor((TeamID)teamNumber);
     }
 
+    private void Update()
+    {
+        
+    }
+
     [PunRPC]
     public void StartFiring()
     {
