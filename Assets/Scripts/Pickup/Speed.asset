@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed989591171ee8c419e2bb0f55316f71, type: 3}
   m_Name: Speed
   m_EditorClassIdentifier: 
-  abilityPrefab: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
+  abilityPrefab: {fileID: 100000, guid: 979632a27455af442bd2d8f36eb0ffce, type: 3}
   abilityType: 0
   abilityTime: 45

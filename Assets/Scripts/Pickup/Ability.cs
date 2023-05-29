@@ -8,7 +8,8 @@ public enum AbilityType
 {
     Speed,
     Jump,
-    Jetpack
+    Jetpack,
+    Flash
 }
 
 [CreateAssetMenu(fileName = "Ability", menuName = "Abilities/Make New Ability", order = 0)]
@@ -53,6 +54,11 @@ public class Ability : ScriptableObject
 
             playerPersonvalCanvas.DisplayAbility("Jump Force Updated");
             //currentEffect = PhotonNetwork.Instantiate(abilityPrefab, player.transform.localPosition + new Vector3(0.02f, 1.25f, -0.205f), Quaternion.identity, player.transform);
+        }
+        else if (abilityType == AbilityType.Flash)
+        {
+            playerPersonvalCanvas.StartAbilityCountDown(abilityTime);
+            playerPersonvalCanvas.DisplayAbility("Flash Skill Gained");
         }
 
     }

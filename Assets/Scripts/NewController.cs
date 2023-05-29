@@ -14,7 +14,7 @@ public class NewController : MonoBehaviourPunCallbacks
 {
     public float MaxFallSpeed;
     public float _airSpeed;
-    PlayerManage playerManage;
+    //PlayerManage playerManage;
 
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
@@ -92,7 +92,7 @@ public class NewController : MonoBehaviourPunCallbacks
     public float walkSpeed = 5f;
     public float maxVelocityChange = 10f;
     // Internal Variables
-    private bool isWalking = false;
+    //private bool isWalking = false;
 
     #region Sprint
 
@@ -127,8 +127,8 @@ public class NewController : MonoBehaviourPunCallbacks
     public float speedReduction = .5f;
 
     // Internal Variables
-    private bool isCrouched = false;
-    private Vector3 originalScale;
+    //private bool isCrouched = false;
+    //private Vector3 originalScale;
 
     #endregion
     #endregion
@@ -141,14 +141,14 @@ public class NewController : MonoBehaviourPunCallbacks
         playerAttriube = GetComponent<PlayerAttribute>();
         hasAnimator = TryGetComponent(out animator);
         AssignAnimationIDs();
-        playerManage = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<PlayerManage>();
+        //playerManage = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<PlayerManage>();
         if (!pw.IsMine)
         {
             playerCamera.enabled = false;
         }
         // Set internal variables
         playerCamera.fieldOfView = fov;
-        originalScale = transform.localScale;
+        //originalScale = transform.localScale;
 
         // reset our timeouts on start
         jumpTimeoutDelta = JumpTimeout;

@@ -70,25 +70,41 @@ public class ChatGui : MonoBehaviour, IChatClientListener
 
     public void OnDestroy()
     {
-        if (chatClient != null)
+        if (ChatPanel != null)
         {
-            ChatPanel.gameObject.SetActive(true); // true
-            chatClient.Disconnect();
+            if (chatClient != null)
+            {
+                ChatPanel.gameObject.SetActive(true); // true
+                chatClient.Disconnect();
+            }
         }
+
     }
     private void OnDisable()
     {
-        if (chatClient != null)
+        if (ChatPanel != null)
         {
-            ChatPanel.gameObject.SetActive(false);
+            if (chatClient != null)
+            {
+                ChatPanel.gameObject.SetActive(false);
+                chatClient.Disconnect();
+            }
+        }
+        else
+        {
             chatClient.Disconnect();
         }
+
     }
     public void OnApplicationQuit()
     {
         if (chatClient != null)
         {
             ChatPanel.gameObject.SetActive(true);
+            chatClient.Disconnect();
+        }
+        else
+        {
             chatClient.Disconnect();
         }
     }

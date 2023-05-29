@@ -46,13 +46,13 @@ public class PlayerMouseLook : MonoBehaviour
 		{
 			Cursor.visible = false;
 			//Cursor.lockState = true;
-			Screen.lockCursor = true;
+			//Screen.lockCursor = true;
 		}
 		else
 		{
 			Cursor.visible = true;
 			//Cursor.lockState = false;
-			Screen.lockCursor = false;
+			//Screen.lockCursor = false;
 		}
 
 		if (Input.GetKeyDown(KeyCode.Escape))

@@ -30,6 +30,15 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     [Header("Choice Panel")]
     public GameObject choicePanel;
 
+
+    [Header("Friends Panel")]
+    public GameObject FriendsPanel;
+    public GameObject friendRowPrefab;
+    public Button friendsListButton;
+    public Button sendRequestButton;
+    public TextMeshProUGUI feedbackText;
+    public TMP_InputField newfriendUsernameInput;
+
     [Header("Create Room Panel")]
     public GameObject createRoomPanel;
     public TMP_InputField roomnameInput;
@@ -85,9 +94,17 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         roomCacheList = new Dictionary<string, RoomInfo>();
         roomlistElements = new Dictionary<string, GameObject>();
-        UIBubblesObject = Instantiate(UIBubblesPrefab);
+        UIBubblesObject = Instantiate(UIBubblesPrefab, new Vector3(-500, -275, 400), Quaternion.identity);
     }
 
+    public void SendFriendRequest()
+    {
+        if (string.IsNullOrEmpty(newfriendUsernameInput.text))
+        {
+            feedbackText.text = "The username field cannot be left blank.";
+            return;
+        }
+    }
 
     public override void OnConnectedToMaster()
     {
@@ -270,6 +287,11 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         UpdateRoomListView();
 
     }
+    
+    public void OnFriendsListButtonClicked()
+    {
+       FriendsPanel.SetActive(!FriendsPanel.activeSelf);
+    }
 
     public void OnBackButtonClicked()
     {
@@ -278,6 +300,10 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
             PhotonNetwork.LeaveLobby();
         }
         SetActivePanel(choicePanel.name);
+    }
+    public void OnBackButtonLogin()
+    {
+        SetActivePanel(loginPanel.name);
     }
 
     public void OnCreateRoomButtonClicked()

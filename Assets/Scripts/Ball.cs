@@ -42,7 +42,7 @@ public class Ball : MonoBehaviourPunCallbacks
             return;
         }
 
-        Vector3 forces = rayOrigin.normalized * 30;
+        Vector3 forces = rayOrigin.normalized * 250;
         rb.AddForce(-forces, ForceMode.Impulse);
 
         //Debug.Log("Teamnumber: " + (TeamID)shooterTeamID);

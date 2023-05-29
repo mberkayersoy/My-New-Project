@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using Firebase.Firestore;
 using System.Collections.Generic;
+using Firebase.Extensions;
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -186,6 +187,8 @@ public class FirebaseManager : MonoBehaviour
             Invoke("ClearOutputs", 0.5f);
         }
     }
+
+    // Login yapýlýrken bütün bilgileri firebase'den çekip PlayerData sýnýfýnda tutuyorum.
     private async void GetDatasFromFirestore(string userEmail)
     {
         var querySnapshot = await firestore.Collection("users")
@@ -199,12 +202,24 @@ public class FirebaseManager : MonoBehaviour
                 var data = document.ToDictionary();
                 if (data.ContainsKey("username"))
                 {
-
-                    string username = data["username"].ToString();
-                    string experience = data["experience"].ToString();
+                    // FirebaseManager'a playerData compenenti ekleyelim.
                     PlayerData playerData = gameObject.AddComponent<PlayerData>();
+
+                    // Firebase'de olan her þeyi çekelim.
+                    string username = data["username"].ToString();
+                    string experience = data["experience"].ToString(); //ekranda göstermek için stringe çevirdim.
+                    string winCount = data["winCount"].ToString(); //ekranda göstermek için stringe çevirdim.
+                    List<string> friendList = (List<string>)data["friendList"];
+                    List<string> requestList = (List<string>)data["requestList"];
+
+                    // Firebase'den çekilen her þeyi PlayerData'ya yazalým.
                     playerData.SetUsername(username);
                     playerData.SetExperience(int.Parse(experience));
+                    playerData.SetWinCount(int.Parse(winCount));
+                    playerData.SetFriendList(friendList);
+                    playerData.SetRequestList(requestList);
+
+                    // InfoPanel
                     usernameText.text = "Username: " + username;
                     experienceText.text = "Experience: " + experience;
                     //NetworkUIManager.Instance.OnLoginButtonClicked(username);
@@ -268,6 +283,9 @@ public class FirebaseManager : MonoBehaviour
             { "email" , _email},
             { "password", _password},
             { "experience", 0 },
+            { "winCount", 0 },
+            { "friendList", null},
+            { "requestList", null},
             // Diðer kullanýcý bilgilerini burada ekleyebilirsiniz
         };
 
@@ -286,4 +304,101 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
+    public void UpdatePlayerExperience()
+    {
+        PlayerData playerData = GetComponent<PlayerData>();
+        // PlayerData sýnýfýndan verileri alýn
+        string username = playerData.GetUsername();
+        int experience = playerData.GetExperience();
+        // Diðer verileri alýn
+
+        // Firestore üzerindeki belgeyi güncellemek için bir dictionary oluþturun
+        Dictionary<string, object> updatedData = new Dictionary<string, object>
+        {
+            { "username", username },
+            { "experience", experience },
+            // Diðer verileri ekle
+        };
+
+        // Güncelleme iþlemini gerçekleþtirin
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        db.Collection("users").Document(auth.CurrentUser.UserId).UpdateAsync(updatedData)
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("Error updating player data: " + task.Exception);
+                }
+                else
+                {
+                    Debug.Log("Player data updated successfully");
+                    experienceText.text = "Experience: " + experience;
+                }
+            });
+    }
+
+    public void SendRequest(string receiver)
+    {
+        PlayerData playerData = GetComponent<PlayerData>();
+        // PlayerData sýnýfýndan verileri alýn
+        string sender = playerData.GetUsername();
+        List<string> friendList = playerData.GetFriendList();
+        List<string> requestList = playerData.GetFriendList();
+        // Diðer verileri alýn
+
+        if (friendList.Contains(receiver))
+        {
+            NetworkUIManager.Instance.feedbackText.text = "You are already friends with " + receiver;
+        }
+        else if(requestList.Contains(receiver))
+        {
+            NetworkUIManager.Instance.feedbackText.text = receiver + " is already on your request list";
+        }
+
+        // Firestore üzerindeki belgeyi güncellemek için bir dictionary oluþturun
+        Dictionary<string, object> updatedData = new Dictionary<string, object>
+        {
+            { "username", sender },
+            { "friendList", friendList },
+            // Diðer verileri ekle
+        };
+
+        // Güncelleme iþlemini gerçekleþtirin
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        db.Collection("users").Document(auth.CurrentUser.UserId).UpdateAsync(updatedData)
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("Error updating player data: " + task.Exception);
+                }
+                else
+                {
+                    Debug.Log("Player data updated successfully");
+                    //experienceText.text = "Experience: " + experience;
+                }
+            });
+    }
+
+    //public async void UpdatePlayerExperience(string username)
+    //{
+    //    var querySnapshot = await firestore.Collection("users")
+    //        .WhereEqualTo("username", username)
+    //        .GetSnapshotAsync();
+
+    //    if (querySnapshot != null)
+    //    {
+    //        foreach (var document in querySnapshot.Documents)
+    //        {
+    //            var data = document.ToDictionary();
+    //            if (data.ContainsKey("username"))
+    //            {
+    //                string experience = data["experience"].ToString();
+    //                PlayerData playerData = GetComponent<PlayerData>();
+    //                playerData.SetExperience(int.Parse(experience));
+    //                experienceText.text = "Experience: " + playerData.GetExperience().ToString();
+    //            }
+    //        }
+    //    }
+    //}
 }

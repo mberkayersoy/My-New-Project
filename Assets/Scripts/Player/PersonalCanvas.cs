@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using Photon.Pun;
 
 public class PersonalCanvas : MonoBehaviour
 {
@@ -15,13 +16,20 @@ public class PersonalCanvas : MonoBehaviour
     public Image UITeamColor;
     public Image countdownImage;
 
-    [Space]
+    [Header("Escape Panel")]
+    public GameObject ESCPanel;
+    public GameObject ConfirmPanel;
+    public Button returnMenuButton;
+    public Button settingsButton;
+    public Button yesButton;
+    public Button noButton;
+
+    [Space (5)]
 
     [Header("Other Variables")]
     public PlayerAttribute player;
     float abilityRemainingTime;
     public float respawnRemainingTime = 3f;
-    // Time stamp arastir.
     void Start()
     {
         player = GetComponentInParent<PlayerAttribute>();
@@ -31,6 +39,8 @@ public class PersonalCanvas : MonoBehaviour
         deadSectionCountdown = deadSection.GetComponentInChildren<TextMeshProUGUI>();
         deadSectionCountdown.color = player.teamColor;
         announceAbility.color = player.teamColor;
+        ESCPanel.SetActive(false);
+        ConfirmPanel.SetActive(false);
     }
 
     private void Update()
@@ -60,6 +70,41 @@ public class PersonalCanvas : MonoBehaviour
             }
 
         }
+
+        EscapePanelUI();
+        if (ESCPanel.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
+
+    public void EscapePanelUI()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ESCPanel.SetActive(!ESCPanel.activeSelf);
+        }
+    }
+
+        
+    public void OnClickReturnMenu()
+    {
+        ConfirmPanel.SetActive(true);
+    }
+
+    public void OnClickNoButton()
+    {
+        ConfirmPanel.SetActive(false);
+    }    
+    public void OnClickYesButton()
+    {
+        PhotonNetwork.LeaveRoom();
+        NetworkUIManager.Instance.menuCamera.gameObject.SetActive(true);
+        NetworkUIManager.Instance.SetActivePanel(NetworkUIManager.Instance.choicePanel.name);
     }
 
     public void DisplayAbility(string abilitytype)

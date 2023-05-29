@@ -50,9 +50,8 @@ public class GameManagerr : MonoBehaviourPunCallbacks
         UIManager.Instance.PreGameUISection.StartCountDown();
         if (!PhotonNetwork.IsMasterClient) return; // Only MasterClient can instantiate first ball.
 
-        mainBall = PhotonNetwork.InstantiateRoomObject("Ball", Vector3.up * 40, Quaternion.identity);
-        var randomVector = Random.insideUnitSphere * 25f;
-        mainBall.GetComponent<Rigidbody>().AddForce(randomVector, ForceMode.Impulse);
+        mainBall = PhotonNetwork.InstantiateRoomObject("Ball", Vector3.up * 100, Quaternion.identity);
+        mainBall.SetActive(true);
         //ballList.Add(mainBall.GetPhotonView().ViewID);
         //pw.RPC("AddBallList", RpcTarget.All, mainBall.GetPhotonView().ViewID);
         isGameEnd = false;
@@ -157,7 +156,7 @@ public class GameManagerr : MonoBehaviourPunCallbacks
             randomPoint = hit.point;
         }
 
-        return randomPoint + Vector3.up * 2;
+        return randomPoint + Vector3.up / 2;
         //player.GetComponent<PlayerAttribute>().isDead = true;
     }
 

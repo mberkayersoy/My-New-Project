@@ -28,6 +28,9 @@ public class PreGameUI : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(1f);
         } 
         startCountDownText.text = "GO!";
+
+        var randomVector = Random.insideUnitSphere * 100f;
+        GameManagerr.Instance.mainBall.GetComponent<Rigidbody>().AddForce(randomVector, ForceMode.Impulse);
         //GameManagerr.Instance.pw.RPC("StartTheGame", RpcTarget.All);
         StartCoroutine(CleanUI());
     }
@@ -40,9 +43,9 @@ public class PreGameUI : MonoBehaviourPunCallbacks
         UIManager.Instance.GameUISection.gameObject.SetActive(true);
     }
 
-    private void OnEnable()
-    {
-        StartCountDown();
-    }
+    //private void OnEnable()
+    //{
+    //    StartCountDown();
+    //}
 
 }

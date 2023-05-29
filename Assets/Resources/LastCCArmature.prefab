@@ -33002,8 +33002,8 @@ GameObject:
   - component: {fileID: 1525864040546653239}
   - component: {fileID: 2427461672906263669}
   - component: {fileID: 5580349584473946235}
-  - component: {fileID: 5771111652163604940}
-  - component: {fileID: 6769464713232326524}
+  - component: {fileID: 7394102348059906674}
+  - component: {fileID: 2570527330631511187}
   m_Layer: 2
   m_Name: LastCCArmature
   m_TagString: Player
@@ -33312,7 +33312,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 1525864040546653198}
   - {fileID: 5580349584473946235}
-  - {fileID: 6769464713232326524}
+  - {fileID: 2570527330631511187}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -33332,7 +33332,7 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!54 &5771111652163604940
+--- !u!54 &7394102348059906674
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -33346,9 +33346,9 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 126
+  m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6769464713232326524
+--- !u!114 &2570527330631511187
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
