@@ -34,7 +34,14 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     [Header("Friends Panel")]
     public GameObject FriendsPanel;
     public GameObject friendRowPrefab;
-    public Button friendsListButton;
+    public GameObject requestRowPrefab;
+    public GameObject friendScrollview;
+    public GameObject requestScrollview;
+    public Transform friendContent;
+    public Transform requestContent;
+    public Button friendsPanelButton;
+    public Button showFriendsButton;
+    public Button showRequestButton;
     public Button sendRequestButton;
     public TextMeshProUGUI feedbackText;
     public TMP_InputField newfriendUsernameInput;
@@ -95,16 +102,21 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         roomCacheList = new Dictionary<string, RoomInfo>();
         roomlistElements = new Dictionary<string, GameObject>();
         UIBubblesObject = Instantiate(UIBubblesPrefab, new Vector3(-500, -275, 400), Quaternion.identity);
+        requestScrollview.SetActive(false);
     }
 
-    public void SendFriendRequest()
+
+
+    public void OnClickSendRequestButton()
     {
         if (string.IsNullOrEmpty(newfriendUsernameInput.text))
         {
             feedbackText.text = "The username field cannot be left blank.";
             return;
         }
+        FirebaseManager.Instance.SendRequest(newfriendUsernameInput.text);
     }
+    
 
     public override void OnConnectedToMaster()
     {
@@ -243,8 +255,6 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
         insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
         insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
-
-
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -288,9 +298,21 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
     }
     
-    public void OnFriendsListButtonClicked()
+    public void OnFriendsPanelButtonClicked()
     {
        FriendsPanel.SetActive(!FriendsPanel.activeSelf);
+    }
+
+    public void OnFriendShowButtonClicked()
+    {
+        friendScrollview.SetActive(true);
+        requestScrollview.SetActive(false);
+    }
+
+    public void OnRequestShowButtonClicked()
+    {
+        requestScrollview.SetActive(true);
+        friendScrollview.SetActive(false);
     }
 
     public void OnBackButtonClicked()
@@ -332,9 +354,9 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
-    public void OnLoginButtonClicked(/*string username*/)
+    public void OnLoginButtonClicked(string username)
     {
-        PhotonNetwork.LocalPlayer.NickName = usernameInput.text;
+        PhotonNetwork.LocalPlayer.NickName = username;
         PhotonNetwork.ConnectUsingSettings();
         LoadingPanel.SetActive(true);
         LoadingImage.transform.DORotate(new Vector3(0f, 0f, -360f), 0.5f, RotateMode.FastBeyond360).SetLoops(-1); ;

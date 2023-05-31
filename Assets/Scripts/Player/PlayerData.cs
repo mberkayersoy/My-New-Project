@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [System.Serializable]
 public class PlayerData : MonoBehaviour
@@ -14,6 +15,8 @@ public class PlayerData : MonoBehaviour
     public void AddFriend(string newFriend)
     {
         friendsList.Add(newFriend);
+        GameObject row = Instantiate(NetworkUIManager.Instance.friendRowPrefab, NetworkUIManager.Instance.friendContent);
+        row.GetComponentInChildren<TextMeshProUGUI>().text = newFriend;
     }
 
     public void RemoveFriend(string oldFriend)
@@ -26,9 +29,20 @@ public class PlayerData : MonoBehaviour
         return friendsList;
     }
 
+    // Login yapilinca calisiyor.
     public void SetFriendList(List<string> friendData)
     {
-         friendsList = friendData;
+        friendsList = friendData;
+        SetFriendsRow();
+    }
+
+    public void SetFriendsRow()
+    {
+        foreach (string friend in friendsList)
+        {
+            GameObject row = Instantiate(NetworkUIManager.Instance.friendRowPrefab, NetworkUIManager.Instance.friendContent);
+            row.GetComponentInChildren<TextMeshProUGUI>().text = friend;
+        }
     }
 
     public void AddRequest(string newRequest)
@@ -41,9 +55,20 @@ public class PlayerData : MonoBehaviour
         requestList.Remove(oldRequest);
     }
 
+    // Login yapilinca calisiyor.
     public void SetRequestList(List<string> requestData)
     {
         requestList = requestData;
+        SetRequestRows();
+    }
+
+    public void SetRequestRows()
+    {
+        foreach (string request in requestList)
+        {
+            GameObject row = Instantiate(NetworkUIManager.Instance.requestRowPrefab, NetworkUIManager.Instance.requestContent);
+            row.GetComponentInChildren<TextMeshProUGUI>().text = request;
+        }
     }
 
     public List<string> GetRequestList()

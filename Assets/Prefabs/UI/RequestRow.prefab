@@ -389,6 +389,7 @@ GameObject:
   - component: {fileID: 6301550145738981694}
   - component: {fileID: 6301550145738981695}
   - component: {fileID: 6301550145738981688}
+  - component: {fileID: 2576993781059585926}
   m_Layer: 5
   m_Name: RequestRow
   m_TagString: Untagged
@@ -483,3 +484,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2576993781059585926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6301550145738981690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9515bb49d9987624d8813cf1e1438ed5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  senderName: 
+  acceptRequestButton: {fileID: 6301550144906753853}
+  RejectRequestButton: {fileID: 6301550145207925218}

@@ -389,6 +389,7 @@ GameObject:
   - component: {fileID: 6301550145738981694}
   - component: {fileID: 6301550145738981695}
   - component: {fileID: 6301550145738981688}
+  - component: {fileID: 149928579653967677}
   m_Layer: 5
   m_Name: FriendRow
   m_TagString: Untagged
@@ -483,3 +484,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &149928579653967677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6301550145738981690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1154ec680ee12b4d883e24af1f700c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  friendName: 
+  sendMessageButton: {fileID: 6301550144906753853}
+  removeFriendButton: {fileID: 6301550145207925218}
