@@ -15,8 +15,6 @@ public class PlayerData : MonoBehaviour
     public void AddFriend(string newFriend)
     {
         friendsList.Add(newFriend);
-        GameObject row = Instantiate(NetworkUIManager.Instance.friendRowPrefab, NetworkUIManager.Instance.friendContent);
-        row.GetComponentInChildren<TextMeshProUGUI>().text = newFriend;
     }
 
     public void RemoveFriend(string oldFriend)
@@ -38,6 +36,16 @@ public class PlayerData : MonoBehaviour
 
     public void SetFriendsRow()
     {
+        Debug.Log("NetworkUIManager.Instance.friendContent.childCount:" + NetworkUIManager.Instance.friendContent.childCount);
+        if (NetworkUIManager.Instance.friendContent.childCount > 0)
+        {
+            foreach (Transform friend in NetworkUIManager.Instance.friendContent)
+            {
+                Debug.Log("child destroyed: " + friend);
+                Destroy(friend.gameObject);
+            }
+
+        }
         foreach (string friend in friendsList)
         {
             GameObject row = Instantiate(NetworkUIManager.Instance.friendRowPrefab, NetworkUIManager.Instance.friendContent);
@@ -64,6 +72,15 @@ public class PlayerData : MonoBehaviour
 
     public void SetRequestRows()
     {
+
+        if (NetworkUIManager.Instance.requestContent.childCount > 0)
+        {
+            foreach (Transform request in NetworkUIManager.Instance.requestContent)
+            {
+                Destroy(request.gameObject);
+            }
+
+        }
         foreach (string request in requestList)
         {
             GameObject row = Instantiate(NetworkUIManager.Instance.requestRowPrefab, NetworkUIManager.Instance.requestContent);

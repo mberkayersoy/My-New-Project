@@ -35,6 +35,8 @@ public class FirebaseManager : MonoBehaviour
     [Header("Menu UI")]
     [SerializeField] public TextMeshProUGUI usernameText;
     [SerializeField] public TextMeshProUGUI experienceText;
+
+
     private void Awake()
     {
         if (Instance == null)
@@ -47,45 +49,10 @@ public class FirebaseManager : MonoBehaviour
             Instance = this;
         }
 
-        if (!Application.isEditor)
-        {
-            ClearOutputs();
-            if (auth != null)
-            {
-                auth.SignOut();
-                Debug.Log("Sign out!");
-            }
-        }
-
-
-        ClearOutputs();
-        if (auth != null)
-        {
-            auth.SignOut();
-            Debug.Log("Sign out!");
-        }
-
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(checkDependancyTask =>
-        {
-            var dependencyStatus = checkDependancyTask.Result;
-
-            if (dependencyStatus == DependencyStatus.Available)
-            {
-
-                InitializeFirebase();
-            }
-            else
-            {
-                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
-            }
-        });
+        InitializeFirebase();
     }
 
-    private void Start()
-    {
-        
-    }
-    void OnDestroy()
+    private void OnDestroy()
     {
         if (auth != null)
         {
@@ -95,15 +62,30 @@ public class FirebaseManager : MonoBehaviour
         }
 
         if (user != null)
+        {
             user.DeleteAsync();
+        }
     }
+
     private void InitializeFirebase()
     {
-        auth = FirebaseAuth.DefaultInstance;
-        auth.StateChanged += AuthStateChanged;
-        AuthStateChanged(this, null);
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        {
+            var dependencyStatus = task.Result;
 
-        firestore = FirebaseFirestore.DefaultInstance;
+            if (dependencyStatus == DependencyStatus.Available)
+            {
+                auth = FirebaseAuth.DefaultInstance;
+                auth.StateChanged += AuthStateChanged;
+                AuthStateChanged(this, null);
+
+                firestore = FirebaseFirestore.DefaultInstance;
+            }
+            else
+            {
+                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
+            }
+        });
     }
 
     private void AuthStateChanged(object sender, EventArgs eventArgs)
@@ -120,22 +102,200 @@ public class FirebaseManager : MonoBehaviour
 
             if (signedIn)
             {
-
                 Debug.Log($"Signed In: {user.DisplayName}");
             }
-
         }
+    }
+
+    //private void Awake()
+    //{
+    //    if (Instance == null)
+    //    {
+    //        Instance = this;
+    //    }
+    //    else if (Instance != this)
+    //    {
+    //        Destroy(this.gameObject);
+    //        Instance = this;
+    //    }
+
+    //    if (!Application.isEditor)
+    //    {
+    //        ClearOutputs();
+    //        if (auth != null)
+    //        {
+    //            auth.SignOut();
+    //            Debug.Log("Sign out!");
+    //        }
+    //    }
+
+
+    //    ClearOutputs();
+    //    if (auth != null)
+    //    {
+    //        auth.SignOut();
+    //        Debug.Log("Sign out!");
+    //    }
+
+    //    FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(checkDependancyTask =>
+    //    {
+    //        var dependencyStatus = checkDependancyTask.Result;
+
+    //        if (dependencyStatus == DependencyStatus.Available)
+    //        {
+
+    //            InitializeFirebase();
+    //        }
+    //        else
+    //        {
+    //            Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
+    //        }
+    //    });
+
+    //}
+
+    //void OnDestroy()
+    //{
+    //    if (auth != null)
+    //    {
+    //        auth.StateChanged -= AuthStateChanged;
+    //        auth.SignOut();
+    //        auth = null;
+    //    }
+
+    //    if (user != null)
+    //        user.DeleteAsync();
+    //}
+    //private void InitializeFirebase()
+    //{
+    //    auth = FirebaseAuth.DefaultInstance;
+    //    auth.StateChanged += AuthStateChanged;
+    //    AuthStateChanged(this, null);
+
+    //    firestore = FirebaseFirestore.DefaultInstance;
+    //}
+
+    //private void AuthStateChanged(object sender, EventArgs eventArgs)
+    //{
+    //    if (auth.CurrentUser != user)
+    //    {
+    //        bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
+    //        if (!signedIn && user != null)
+    //        {
+    //            Debug.Log("Signed out");
+    //        }
+
+    //        user = auth.CurrentUser;
+
+    //        if (signedIn)
+    //        {
+
+    //            Debug.Log($"Signed In: {user.DisplayName}");
+    //        }
+
+    //    }
+    //}
+
+    public void ListenDocs()
+    {
+        Debug.Log("enter listendocs");
+        DocumentReference docRef = firestore.Collection("users").Document(auth.CurrentUser.UserId);
+        docRef.Listen((snapshot =>
+        {
+            Debug.Log("listener enter");
+            if (snapshot != null && snapshot.Exists)
+            {
+                Debug.Log("birinci if");
+                var data = snapshot.ToDictionary();
+                PlayerData playerData = GetComponent<PlayerData>();
+                // "friendList" alanýndaki güncellemeleri kontrol et
+                if (data.ContainsKey("friendList"))
+                {
+                    Debug.Log("data.ContainsKey() if");
+                    var friendList = data["friendList"] as List<object>;
+
+                    List<object> friendListData = friendList;
+                    List<string> stringFriendList;
+
+                    if (friendListData != null)
+                    {
+                        stringFriendList = friendListData.Cast<string>().ToList();
+                        playerData.SetFriendList(stringFriendList);
+                    }
+                    else
+                    {
+                        stringFriendList = new List<string>();
+                        playerData.SetFriendList(stringFriendList);
+                    }
+
+                    // Friend List güncellendiðinde buraya girer
+                    Debug.Log("Friend List updated: " + friendList.Count + " friends");
+                    //if (NetworkUIManager.Instance.friendContent.childCount <=0)
+                    //{
+                    //    foreach (Transform child in NetworkUIManager.Instance.friendContent)
+                    //    {
+                    //        Destroy(child);
+                    //    }
+
+                    //}
+                    //foreach (string friend in GetComponent<PlayerData>().GetFriendList())
+                    //{
+                    //    GameObject row = Instantiate(NetworkUIManager.Instance.friendRowPrefab, NetworkUIManager.Instance.friendContent);
+                    //    row.GetComponentInChildren<TextMeshProUGUI>().text = friend;
+                    //}
+
+                    // Friend List güncellendikten sonra yapýlmasý gereken iþlemleri buraya ekleyebilirsiniz
+                }
+
+                // "requestList" alanýndaki güncellemeleri kontrol et
+                if (data.ContainsKey("requestList"))
+                {
+                    var requestList = data["requestList"] as List<object>;
+
+                    List<object> requestListData = requestList;
+                    List<string> stringRequestList;
+
+                    if (requestListData != null)
+                    {
+                        stringRequestList = requestListData.Cast<string>().ToList();
+                        playerData.SetRequestList(stringRequestList);
+                    }
+                    else
+                    {
+                        stringRequestList = new List<string>();
+                        playerData.SetRequestList(stringRequestList);
+                    }
+
+                    // Request List güncellendiðinde buraya girer
+                    Debug.Log("Request List updated: " + requestList.Count + " requests");
+
+                    //if (NetworkUIManager.Instance.requestContent.childCount > 0)
+                    //{
+                    //    foreach (Transform request in NetworkUIManager.Instance.requestContent)
+                    //    {
+                    //        Destroy(request);
+                    //    }
+
+                    //}
+                    //foreach (string request in GetComponent<PlayerData>().GetRequestList())
+                    //{
+                    //    GameObject row = Instantiate(NetworkUIManager.Instance.requestRowPrefab, NetworkUIManager.Instance.requestContent);
+                    //    row.GetComponentInChildren<TextMeshProUGUI>().text = request;
+                    //}
+                    // Request List güncellendikten sonra yapýlmasý gereken iþlemleri buraya ekleyebilirsiniz
+                }
+            }
+            else
+            {
+                Debug.Log("Document does not exist or has been deleted.");
+            }
+        }));
     }
 
     public void ClearOutputs()
     {
         loginOutputText.text = "";
         registerOutputText.text = "";
-        if (!Application.isEditor)
-        {
-            loginOutputText.text = "";
-            registerOutputText.text = "";
-        }
     }
 
     public void LoginButton()
@@ -180,6 +340,7 @@ public class FirebaseManager : MonoBehaviour
             }
             loginOutputText.text = output;
             loginOutputText.color = Color.red;
+            Invoke("ClearOutputs", 1f);
         }
         else
         {
@@ -187,10 +348,7 @@ public class FirebaseManager : MonoBehaviour
             loginOutputText.text = "Login successfully";
             loginOutputText.color = Color.green;
             GetDatasFromFirestore(loginEmail.text);
-
-            //PlayerInfo.Instance.setPlayerName(user.DisplayName);
-            //LoginPanelController.Instance.LoginSuccess();
-            Invoke("ClearOutputs", 0.5f);
+            //Invoke("ClearOutputs", 0.5f);
         }
     }
 
@@ -254,12 +412,13 @@ public class FirebaseManager : MonoBehaviour
                     usernameText.text = "Username: " + username;
                     experienceText.text = "Experience: " + experience;
                     NetworkUIManager.Instance.OnLoginButtonClicked(username);
+                    ListenDocs();
                 }   
                 else
                 {
                     loginOutputText.text = "Username field not found";
                     loginOutputText.color = Color.red;
-
+                    Invoke("ClearOutputs", 1f);
                 }
             }
         }
@@ -270,6 +429,7 @@ public class FirebaseManager : MonoBehaviour
         if (_password != _confirmPassword)
         {
             registerOutputText.text = "Passwords do not match!";
+            Invoke("ClearOutputs", 1f);
             yield break;
         }
 
@@ -283,12 +443,14 @@ public class FirebaseManager : MonoBehaviour
         {
             Debug.LogError("Error checking username: " + checkUsernameTask.Exception);
             registerOutputText.text = "An error occurred. Please try again.";
+            Invoke("ClearOutputs", 1f);
             yield break;
         }
 
         if (checkUsernameTask.Result.Count > 0)
         {
             registerOutputText.text = "Username already exists!";
+            Invoke("ClearOutputs", 1f);
             yield break;
         }
 
@@ -304,6 +466,7 @@ public class FirebaseManager : MonoBehaviour
             string message = "Registration failed. Error: " + errorCode.ToString();
             Debug.LogError(message);
             registerOutputText.text = message;
+            Invoke("ClearOutputs", 1f);
         }
         else
         {
@@ -327,11 +490,14 @@ public class FirebaseManager : MonoBehaviour
             {
                 Debug.LogError("Error saving user data: " + saveUserTask.Exception);
                 registerOutputText.text = "An error occurred during registration. Please try again.";
+                Invoke("ClearOutputs", 1f);
                 yield break;
             }
 
-            Debug.Log("Registration successful!");
-            registerOutputText.text = "Registration successful!";
+            NetworkUIManager.Instance.SetActivePanel("LoginPanel");
+            loginOutputText.text = "Registration successful!";
+            loginOutputText.color = Color.green;
+            Invoke("ClearOutputs", 1f);
         }
     }
 
@@ -376,27 +542,21 @@ public class FirebaseManager : MonoBehaviour
         List<string> senderFriendList = playerData.GetFriendList();
         List<string> senderRequestList = playerData.GetRequestList();
 
-        if (senderFriendList != null)
+        if (senderFriendList != null && senderFriendList.Contains(receiver))
         {
-            if (senderFriendList.Contains(receiver))
-            {
-                NetworkUIManager.Instance.feedbackText.text = "You are already friends with " + receiver;
-                return;
-            }
+            NetworkUIManager.Instance.ShowFeedBackText("You are already friends with " + receiver);
+            return;
         }
 
-        if (senderRequestList != null )
+        if (senderRequestList != null && senderRequestList.Contains(receiver))
         {
-            if (senderRequestList.Contains(receiver))
-            {
-                NetworkUIManager.Instance.feedbackText.text = receiver + " is already on your request list";
-                return;
-            }
+            NetworkUIManager.Instance.ShowFeedBackText(receiver + " is already on your request list");
+            return;
         }
 
         if (receiver == sender)
         {
-            NetworkUIManager.Instance.feedbackText.text = "You cannot send requests to yourself";
+            NetworkUIManager.Instance.ShowFeedBackText("You cannot send requests to yourself");
             return;
         }
 
@@ -404,16 +564,10 @@ public class FirebaseManager : MonoBehaviour
             .WhereEqualTo("username", receiver)
             .GetSnapshotAsync();
 
-        if (querySnapshot == null)
+        if (querySnapshot != null && querySnapshot.Count > 0)
         {
-            Debug.Log("null: " + receiver);
-            NetworkUIManager.Instance.feedbackText.text = "Receiver not found: " + receiver;
-            return;
-        }
+            Debug.Log("User exists: " + receiver);
 
-        if (querySnapshot != null)
-        {
-            Debug.Log("null degil: " + receiver);
             foreach (var document in querySnapshot.Documents)
             {
                 var data = document.ToDictionary();
@@ -421,24 +575,12 @@ public class FirebaseManager : MonoBehaviour
                 if (data.ContainsKey("username"))
                 {
                     List<object> receiverRequestList = data["requestList"] as List<object>;
-                    List<string> stringReceiverRequestList;
+                    List<string> stringReceiverRequestList = receiverRequestList?.Cast<string>().ToList() ?? new List<string>();
 
-                    if (receiverRequestList != null)
+                    if (stringReceiverRequestList.Contains(sender))
                     {
-                        stringReceiverRequestList = receiverRequestList.Cast<string>().ToList();
-                    }
-                    else
-                    {
-                        stringReceiverRequestList = new List<string>();
-                    }
-
-                    if (stringReceiverRequestList != null)
-                    {
-                        if (receiverRequestList.Contains(sender))
-                        {
-                            NetworkUIManager.Instance.feedbackText.text = "You are already on " + receiver + "'s request list";
-                            return;
-                        }
+                        NetworkUIManager.Instance.ShowFeedBackText("You are already on " + receiver + "'s request list");
+                        return;
                     }
 
                     receiverRequestList.Add(sender);
@@ -446,15 +588,17 @@ public class FirebaseManager : MonoBehaviour
                     await document.Reference.UpdateAsync("requestList", receiverRequestList);
 
                     // Ýstek gönderildi mesajýný göster
-                    NetworkUIManager.Instance.feedbackText.text = "Request sent to " + receiver;
+                    NetworkUIManager.Instance.ShowFeedBackText("Request sent to " + receiver);
+                    NetworkUIManager.Instance.newfriendUsernameInput.text = "";
                 }
             }
         }
         else
         {
-            NetworkUIManager.Instance.feedbackText.text = "There is no such that user named " + receiver;
+            NetworkUIManager.Instance.ShowFeedBackText("There is no user named " + receiver);
         }
     }
+
 
     public async void AcceptRequestAsync(string senderUsername)
     {
@@ -483,7 +627,7 @@ public class FirebaseManager : MonoBehaviour
 
             // Request'in kabul edildiði tarafýn requestList'inden ilgili requesti kaldýr
             stringAcceptingUserRequestList.Remove(senderUsername);
-            playerData.RemoveRequest(senderUsername);
+            //playerData.RemoveRequest(senderUsername);
 
             List<object> friendListData = acceptingUserData["friendList"] as List<object>;
             List<string> stringAcceptingUserFriendList;
@@ -499,7 +643,7 @@ public class FirebaseManager : MonoBehaviour
 
             // Kabul eden kullanýcýnýn friendList'ine request atan kiþiyi ekle
             stringAcceptingUserFriendList.Add(senderUsername);
-            playerData.AddFriend(senderUsername);
+            //playerData.AddFriend(senderUsername);
 
             // Firebase Firestore'da güncelleme iþlemini yap
             await acceptingUserDocument.Reference.UpdateAsync(new Dictionary<string, object>
@@ -604,7 +748,7 @@ public class FirebaseManager : MonoBehaviour
 
             // Arkadaþ kaldýran kiþinin friendList'inden ilgili arkadaþý kaldýr
             stringLocalUserFriendList.Remove(removedFriend);
-            playerData.RemoveFriend(removedFriend);
+            //playerData.RemoveFriend(removedFriend);
 
             // Firebase Firestore'da güncelleme iþlemini yap
             await localUserDocument.Reference.UpdateAsync(new Dictionary<string, object>

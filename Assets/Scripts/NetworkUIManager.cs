@@ -30,7 +30,6 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     [Header("Choice Panel")]
     public GameObject choicePanel;
 
-
     [Header("Friends Panel")]
     public GameObject FriendsPanel;
     public GameObject friendRowPrefab;
@@ -105,16 +104,24 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         requestScrollview.SetActive(false);
     }
 
-
-
     public void OnClickSendRequestButton()
     {
         if (string.IsNullOrEmpty(newfriendUsernameInput.text))
         {
-            feedbackText.text = "The username field cannot be left blank.";
+            ShowFeedBackText("The username field cannot be left blank.");
             return;
         }
         FirebaseManager.Instance.SendRequest(newfriendUsernameInput.text);
+    }
+
+    public void ShowFeedBackText(string feedback)
+    {
+        feedbackText.text = feedback;
+        Invoke(nameof(ClearFeedBackText), 2f);
+    }
+    public void ClearFeedBackText()
+    {
+        feedbackText.text = "";
     }
     
 
