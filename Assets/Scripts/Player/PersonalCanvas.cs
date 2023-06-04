@@ -20,16 +20,16 @@ public class PersonalCanvas : MonoBehaviour
     public GameObject ESCPanel;
     public GameObject ConfirmPanel;
     public Button returnMenuButton;
-    public Button settingsButton;
     public Button yesButton;
     public Button noButton;
 
-    [Space (5)]
+    [Space(5)]
 
     [Header("Other Variables")]
     public PlayerAttribute player;
     float abilityRemainingTime;
     public float respawnRemainingTime = 3f;
+
     void Start()
     {
         player = GetComponentInParent<PlayerAttribute>();
@@ -72,21 +72,28 @@ public class PersonalCanvas : MonoBehaviour
         }
 
         EscapePanelUI();
-        if (ESCPanel.activeSelf)
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
     }
+
+    
 
     public void EscapePanelUI()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ESCPanel.SetActive(!ESCPanel.activeSelf);
+
+            if (ESCPanel.activeSelf)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                NetworkUIManager.Instance.RightPanel.SetActive(true);
+            }
+            else
+            {
+                NetworkUIManager.Instance.RightPanel.SetActive(false);
+                ConfirmPanel.SetActive(false);
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
     }
 

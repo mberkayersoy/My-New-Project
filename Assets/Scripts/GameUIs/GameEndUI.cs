@@ -19,14 +19,19 @@ public class GameEndUI : MonoBehaviourPunCallbacks
         Cursor.lockState = CursorLockMode.None;
         winnerDisplay.text = "WINNER" + "\n" + ScoreBoard.Instance.GetWinners().ToString();
         winnerDisplay.color = TeamColor.GetTeamColor(ScoreBoard.Instance.GetWinners());
-        SetPlayerDataExperience();
+        UpdatePlayerDatas();
     }
 
-    void SetPlayerDataExperience()
+    void UpdatePlayerDatas()
     {
         int gainExperience = (int)ScoreBoard.Instance.teamscores[(TeamID)PhotonNetwork.LocalPlayer.GetTeamID()];
         FirebaseManager.Instance.GetComponent<PlayerData>().SetExperience(gainExperience);
+        if (PhotonNetwork.LocalPlayer.GetTeamID() == (int)ScoreBoard.Instance.GetWinners())
+        {
+            FirebaseManager.Instance.GetComponent<PlayerData>().AddWin();
+        }
         FirebaseManager.Instance.UpdatePlayerExperience();
+        FirebaseManager.Instance.UpdatePlayerWinCount();
     }
     public void ReturnLobby()
     {

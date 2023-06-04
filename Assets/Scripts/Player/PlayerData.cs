@@ -7,11 +7,24 @@ using TMPro;
 public class PlayerData : MonoBehaviour
 {
     [SerializeField] private string username;
+    [SerializeField] private int playerStatus;
     [SerializeField] private int experience;
     [SerializeField] private int winCount;
     [SerializeField] private List<string> requestList;
     [SerializeField] private List<string> friendsList;
 
+
+    public int GetPlayerStatus()
+    {
+        return playerStatus;
+    }
+
+    public void SetPlayerStatus(int newStatus)
+    {
+        playerStatus = newStatus;
+        FirebaseManager.Instance.UpdatePlayerStatus();
+    }
+    
     public void AddFriend(string newFriend)
     {
         friendsList.Add(newFriend);
@@ -36,12 +49,12 @@ public class PlayerData : MonoBehaviour
 
     public void SetFriendsRow()
     {
-        Debug.Log("NetworkUIManager.Instance.friendContent.childCount:" + NetworkUIManager.Instance.friendContent.childCount);
+       // Debug.Log("NetworkUIManager.Instance.friendContent.childCount:" + NetworkUIManager.Instance.friendContent.childCount);
         if (NetworkUIManager.Instance.friendContent.childCount > 0)
         {
             foreach (Transform friend in NetworkUIManager.Instance.friendContent)
             {
-                Debug.Log("child destroyed: " + friend);
+                //Debug.Log("child destroyed: " + friend);
                 Destroy(friend.gameObject);
             }
 
@@ -122,5 +135,10 @@ public class PlayerData : MonoBehaviour
     {
         winCount++;
     }
+    public int GetWinCount()
+    {
+        return winCount;
+    }
+    
 
 }

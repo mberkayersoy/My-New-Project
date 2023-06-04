@@ -9,6 +9,8 @@ TagManager:
   - projectile
   - Ball
   - Pickup
+  - ChoicePanel
+  - RightPanel
   layers:
   - Default
   - TransparentFX

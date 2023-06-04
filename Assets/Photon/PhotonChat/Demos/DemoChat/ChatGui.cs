@@ -16,6 +16,8 @@ using TMPro;
 
 public class ChatGui : MonoBehaviour, IChatClientListener
 {
+    public static ChatGui Instance;
+
     [Header("TECHNICAL SETTINGS")]
     public string[] Connectable_channels;
     public int PreferencetoSeePastMessages;
@@ -35,6 +37,19 @@ public class ChatGui : MonoBehaviour, IChatClientListener
     public Text WrittenTexts;
     public bool isChatPanelOpen;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(this.gameObject);
+            Instance = this;
+        }
+    }
+
     public void Start()
     {
         isChatPanelOpen = false;
@@ -42,6 +57,7 @@ public class ChatGui : MonoBehaviour, IChatClientListener
 
     public void Connect()
     {
+        //Debug.Log("CONNECTGUI");
         chatAppSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
         Connectable_channels[0] = RoomName;
         chatClient = new ChatClient(this);
@@ -53,15 +69,16 @@ public class ChatGui : MonoBehaviour, IChatClientListener
     }
     public void OnConnected()
     {
+        Debug.Log("chatclient: Onconnected");
         if (Connectable_channels != null && Connectable_channels.Length > 0)
         {
             chatClient.Subscribe(Connectable_channels, PreferencetoSeePastMessages);
-
         }
         ChatPanel.gameObject.SetActive(true);
         InputPanel.gameObject.SetActive(false);
         MessageWritingInput.Select();
         MessageWritingInput.ActivateInputField();
+
     }
     public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
     {
@@ -129,7 +146,7 @@ public class ChatGui : MonoBehaviour, IChatClientListener
         //        // Başka işlemleri burada yapabilirsin
         //    }
         //}
-        Debug.Log(MessageWritingInput.isFocused);
+        //Debug.Log(MessageWritingInput.isFocused);
         if (Input.GetKeyDown(KeyCode.Return))
         {
             if (isChatPanelOpen && string.IsNullOrEmpty(MessageWritingInput.text))
@@ -149,7 +166,7 @@ public class ChatGui : MonoBehaviour, IChatClientListener
     }
     public void OnEnterSend()
     {
-        Debug.Log("OnEnterSend");
+        //Debug.Log("OnEnterSend");
         //if (Input.GetKeyDown(KeyCode.Return))
         //{
             SendChatMessage(MessageWritingInput.text);
