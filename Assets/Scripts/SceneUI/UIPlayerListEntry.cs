@@ -78,7 +78,8 @@ public class UIPlayerListEntry : MonoBehaviour
     {
         ownerId = playerId;
         PlayerNameText.text = playerName;
-        SetPlayerTeamColor(selectedTeamID);
+        //SetPlayerTeamColor(selectedTeamID);
+        SetPlayerTeamColor((TeamID)PhotonNetwork.LocalPlayer.GetTeamID());
     }
 
     private void OnPlayerNumberingChanged()
@@ -106,10 +107,10 @@ public class UIPlayerListEntry : MonoBehaviour
     {
         // Get the selected team from the dropdown
         int selectedTeam = TeamDropdown.value;
-
+        Debug.Log(selectedTeam);
 
         // Get the corresponding team color
-        Color teamColor = TeamColor.GetTeamColor(teamID);
+        Color teamColor = TeamColor.GetTeamColor((TeamID)selectedTeam);
         // Set the player color image to the team color
         PlayerColorImage.color = teamColor;
         return selectedTeam;

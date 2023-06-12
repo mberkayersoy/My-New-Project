@@ -127,7 +127,6 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         feedbackText.text = "";
     }
     
-
     public override void OnConnectedToMaster()
     {
         LoadingImage.transform.DOKill();
@@ -199,9 +198,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
             entry.GetComponent<UIPlayerListEntry>().Initialize(player.ActorNumber, player.NickName);
 
-            insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
-            insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
-            insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
+            UpdateInsideRoomInfos();
 
             if (player.CustomProperties.TryGetValue("IsPlayerReady", out object isPlayerReady))
             {
@@ -229,14 +226,14 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public override void OnLeftRoom()
     {
         ChatSistemi.SetActive(false);
-        //VoiceSistemi.SetActive(false);
         SetActivePanel(choicePanel.name);
         RightPanel.SetActive(true);
         foreach (GameObject entry in playerlistElements.Values)
         {
             Destroy(entry);
         }
-
+        PhotonNetwork.LocalPlayer.SetTeamID((int)TeamID.Blue_Team);
+        Debug.Log(PhotonNetwork.LocalPlayer.GetTeamID());
         playerlistElements.Clear();
         playerlistElements = null;
     }
@@ -250,9 +247,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         playerlistElements.Add(newPlayer.ActorNumber, entry);
 
         startgameButton.gameObject.SetActive(CheckPlayersReady());
-        insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
-        insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
-        insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
+        UpdateInsideRoomInfos();
 
     }
 
@@ -261,9 +256,7 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         Destroy(playerlistElements[otherPlayer.ActorNumber].gameObject);
         playerlistElements.Remove(otherPlayer.ActorNumber);
         startgameButton.gameObject.SetActive(CheckPlayersReady());
-        insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
-        insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
-        insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
+        UpdateInsideRoomInfos();
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -272,10 +265,13 @@ public class NetworkUIManager : MonoBehaviourPunCallbacks, IInRoomCallbacks
         {
             startgameButton.gameObject.SetActive(CheckPlayersReady());
         }
+        UpdateInsideRoomInfos();
+    }
+    private void UpdateInsideRoomInfos()
+    {
         insideRoomInfoPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
         insideRoomInfoPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Room Owner: " + PhotonNetwork.MasterClient.NickName;
         insideRoomInfoPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = PhotonNetwork.CurrentRoom.PlayerCount.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers.ToString();
-
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)

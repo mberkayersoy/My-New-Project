@@ -5875,7 +5875,7 @@ MonoBehaviour:
   ballList: 
   mainBall: {fileID: 0}
   respawnTime: 5
-  abilityPercentage: 20
+  abilityPercentage: 12
   isGameEnd: 0
   pw: {fileID: 0}
   playerManage: {fileID: 3064447972746047396, guid: 69e30dcef5e6c534bae48746b106a55e, type: 3}

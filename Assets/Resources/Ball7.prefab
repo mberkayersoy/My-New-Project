@@ -133,7 +133,7 @@ MonoBehaviour:
   nextBall: {fileID: 6945058542844640839, guid: b0191ea8b77685445a99baacf14ad347, type: 3}
   pw: {fileID: -965056855329225897}
   ballTeamID: 0
-  nextBallID: Ball8
+  nextBallID: 
 --- !u!114 &-965056855329225897
 MonoBehaviour:
   m_ObjectHideFlags: 0
