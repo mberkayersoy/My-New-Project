@@ -1,0 +1,37 @@
+{
+  "project_info": {
+    "project_number": "687552746508",
+    "firebase_url": "https://psycho-bubbles-default-rtdb.firebaseio.com",
+    "project_id": "psycho-bubbles",
+    "storage_bucket": "psycho-bubbles.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687552746508:ios:a9b1b07ec270e491e20a29",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.PsychoBubbles"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfzeC09bDUZDuc5RVx5GZrr793KNFpHd4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 0
+        },
+        "appinvite_service": {
+          "status": 1
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687552746508-abhrik3hm4hm2dr6cnn5u19hdugu16h1.apps.googleusercontent.com"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

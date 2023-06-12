@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Photon.Pun;
 
 public class ScoreBoard : MonoBehaviour
 {
-
     public static ScoreBoard Instance;
     private void Awake()
     {
@@ -15,31 +16,49 @@ public class ScoreBoard : MonoBehaviour
         }
         Instance = this;
     }
-    public float blueScore;
-    public float redScore;
-    public float yellowScore;
-    public float greenScore;
+
+    public PhotonView pw;
     public float scoreMult;
-
-    public void SetScore(int teamID, float ballScale)
+    public Dictionary<TeamID, float> teamscores = new Dictionary<TeamID, float>
     {
-        switch (teamID)
+        { TeamID.Blue_Team, 0 },
+        { TeamID.Red_Team, 0 },
+        { TeamID.Green_Team, 0 },
+        { TeamID.Yellow_Team, 0 },
+    };
+    private void Start()
+    {
+        pw = GetComponent<PhotonView>();
+
+    }
+    
+    [PunRPC]
+    public void SetScore(TeamID teamID, float ballScale)
+    {
+        teamscores[teamID] += (int)(scoreMult * (1 / ballScale));
+        UIManager.Instance.GameUISection.ScoreDisplay();
+
+        if (GameManagerr.Instance.isGameEnd)
         {
-            case 0:
-                blueScore += (int)(scoreMult * (1 / ballScale));
-                break;
-
-            case 1:
-                redScore += (int)(scoreMult * (1 / ballScale));
-                break;
-
-            case 2:
-                yellowScore += (int)(scoreMult * (1 / ballScale));
-                break;
-
-            case 3:
-                greenScore += (int)(scoreMult * (1 / ballScale));
-                break;
+            GetWinners();
         }
+
+    }
+
+    public TeamID GetWinners()
+    {
+        TeamID winningTeam = TeamID.Blue_Team;
+        float highestScore = teamscores[TeamID.Blue_Team];
+
+        foreach (KeyValuePair<TeamID, float> teamScore in teamscores)
+        {
+            if (teamScore.Value > highestScore)
+            {
+                highestScore = teamScore.Value;
+                winningTeam = teamScore.Key;
+            }
+        }
+
+        return winningTeam;
     }
 }
