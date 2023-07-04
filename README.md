@@ -1,6 +1,17 @@
 # Psycho Bubbles
 If you played a lot of web games like me when you were little, you will remember the bubble trouble game. You know, a 2D game where you manage the devil character and destroy them by hitting the balls. Psycho Bubbles is exactly such a game, but with 3D and multiplayer :)
 
+![login](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/190d2828-3ebb-4704-add5-de6a773fa426)
+![register](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/75df4619-87da-4ccf-bda6-fdd6d2d77497)
+![Uploading requestt.png…]()![register](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/63ba3682-690a-435e-96b2-7687b92ee289)
+![privchat](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/77ceeb05-3093-47a5-a99a-8ad22f65ffac)
+![firebasechat](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/59b44b2c-7069-4e0f-ae49-86939e749206)
+![insideroom](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/026f6dc0-5e0a-459f-ba82-613e7f206473)
+![abilities](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/33640a6e-28e6-498d-ba77-51d56de8fafb)
+![jumped](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/1b6d2755-caa8-4709-a374-27208d4f2f8f)
+
+
+
 ## Contents
 
 - [Project Description](#project-description)
@@ -11,7 +22,7 @@ If you played a lot of web games like me when you were little, you will remember
 
 ## Project Description
 
-I developed Psycho Bubbles as my graduation project. The game is played in 3D FPS style.
+I developed Psycho Bubbles as my graduation project. The game is played in 3D FPS style. This is not a finished game project, but if you want to make a multiplayer game, you can customize it as you wish, making it the skeleton of your project or you can use it directly.
 
 ## Installation
 
@@ -42,5 +53,25 @@ In this section, explain how other developers can contribute to your project. Sp
 
 ## License
 
-In this section, specify the usage terms and license for your project. Choose a preferred license type and include the appropriate license statement in your files. Explain what users can do with your project and under what conditions they can use it.
+MIT License
+
+Copyright (c) 2023 Muhammet Berkay Ersoy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
