@@ -43,12 +43,7 @@ The Assets folder contains the 'GoogleService-Info.plist' file. Create your own 
 
 Please replace the "YOUR_CLIENT_ID", "YOUR_REVERSED_CLIENT_ID", "YOUR_API_KEY", "YOUR_GCM_SENDER_ID", "YOUR_PROJECT_ID", "YOUR_STORAGE_BUCKET", "YOUR_GOOGLE_APP_ID" with your own placeholder's actual placeholder data such as "YOUR_GOOGLE_APP_ID" and "YOUR_DATA" placeholder of your project. This way, you're updating the file and keeping your confidential database credentials.
 
-## Usage
-
-
-## Contributing
-
-In this section, explain how other developers can contribute to your project. Specify the steps they need to follow, how they can make contributions, and how they can provide feedback. You can also include your contact information or a link to the project's GitHub page for those interested in contributing to the project's development process.
+#### If you get stuck anywhere, please don't hesitate to contact me. mail: mberkayersoy@gmail.com
 
 ## License
 
