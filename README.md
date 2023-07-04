@@ -16,9 +16,16 @@ I developed Psycho Bubbles as my graduation project. The game is played in 3D FP
 ## Installation
 
 First, download the repository and open it in Unity. Then create your own App Id PUN and App Id Chat keys by opening a photon account.
-![photonwenb](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/784ef5ad-088d-4403-b533-025a161e23a0)
+
+### Photon PUN Configuration
+
+![photonweb](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/b05166a6-3123-4f11-8939-6b8053a73506)
 Then use the keys you created in Unity.
 ![photonıDs](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/591b361d-3858-46e7-b4e0-257c59419ceb)
+That's all you need for Photon.
+
+### Firebase Configuration
+
 
 ## Usage
 
