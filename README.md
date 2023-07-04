@@ -1,13 +1,13 @@
 # Psycho Bubbles
+If you played a lot of web games like me when you were little, you will remember the bubble trouble game. You know, a 2D game where you manage the devil character and destroy them by hitting the balls. Psycho Bubbles is exactly such a game, but with 3D and multiplayer :)
 
 ## Contents
-
 - [Project Description](#project-description)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
-If you played a lot of web games like me when you were little, you will remember the bubble trouble game. You know, a 2D game where you manage the devil character and destroy them by hitting the balls. Psycho Bubbles is exactly such a game, but with 3D and multiplayer :)
+
 
 ## Project Description
 
