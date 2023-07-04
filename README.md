@@ -5,7 +5,7 @@ If you played a lot of web games like me when you were little, you will remember
 - [Project Description](#project-description)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
+- [Game Content](#Game-Content)
 - [License](#license)
 
 
@@ -44,6 +44,13 @@ The Assets folder contains the 'GoogleService-Info.plist' file. Create your own 
 
 Please replace the "YOUR_CLIENT_ID", "YOUR_REVERSED_CLIENT_ID", "YOUR_API_KEY", "YOUR_GCM_SENDER_ID", "YOUR_PROJECT_ID", "YOUR_STORAGE_BUCKET", "YOUR_GOOGLE_APP_ID" with your own placeholder's actual placeholder data such as "YOUR_GOOGLE_APP_ID" and "YOUR_DATA" placeholder of your project. This way, you're updating the file and keeping your confidential database credentials.
 
+## Game Content
+It's good for you to know these before customizing the project.
+* The project consists of a single game scene.
+* It is divided into two as MenuUI and GameUI. When the game starts, GameUI is created and MenuUI active becomes false.
+* If you want to customize the balls in the game, you can adjust everything from the Ball class.
+* As you hit the balls, the skills drop from the balls. These capabilities are designed as scriptableobjects. You can easily add any skill you want.
+  
 #### If you get stuck anywhere, please don't hesitate to contact me. mail: mberkayersoy@gmail.com
 
 ## License
