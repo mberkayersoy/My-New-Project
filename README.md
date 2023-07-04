@@ -1,6 +1,5 @@
-# Project Name
-
-This project provides [description] for [project name].
+# Psycho Bubbles
+If you played a lot of web games like me when you were little, you will remember the bubble trouble game. You know, a 2D game where you manage the devil character and destroy them by hitting the balls. Psycho Bubbles is exactly such a game, but with 3D and multiplayer :)
 
 ## Contents
 
@@ -12,15 +11,18 @@ This project provides [description] for [project name].
 
 ## Project Description
 
-In this section, you can provide a brief description of your project and its purpose. You can mention what type of game it is, its key features, or the value it brings to users.
+I developed Psycho Bubbles as my graduation project. The game is played in 3D FPS style.
 
 ## Installation
 
-In this section, explain how to install and run the project in a local environment. Provide step-by-step instructions on how to install the necessary dependencies, configuration steps, and any other requirements. Also, mention the steps to set up the Firebase configuration and database connection.
+First, download the repository and open it in Unity. Then create your own App Id PUN and App Id Chat keys by opening a photon account.
+![photonwenb](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/784ef5ad-088d-4403-b533-025a161e23a0)
+Then use the keys you created in Unity.
+![photonıDs](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/591b361d-3858-46e7-b4e0-257c59419ceb)
 
 ## Usage
 
-In this section, provide information on how to use the project. Explain the commands or steps to run the project. Describe how users can experience the game's features, use the controls, and utilize the available functionalities.
+First, download the repository and open it in Unity. Then you need App IP PUN and App IP Chat keys by opening a photon account.
 
 ## Contributing
 
