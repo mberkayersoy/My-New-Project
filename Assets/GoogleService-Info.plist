@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>687552746508-abhrik3hm4hm2dr6cnn5u19hdugu16h1.apps.googleusercontent.com</string>
+	<string>YOUR_CLIENT_ID</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.687552746508-abhrik3hm4hm2dr6cnn5u19hdugu16h1</string>
+	<string>YOUR_REVERSED_CLIENT_ID</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAfzeC09bDUZDuc5RVx5GZrr793KNFpHd4</string>
+	<string>YOUR_API_KEY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>687552746508</string>
+	<string>YOUR_GCM_SENDER_ID</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.DefaultCompany.PsychoBubbles</string>
 	<key>PROJECT_ID</key>
-	<string>psycho-bubbles</string>
+	<string>YOUR_PROJECT_ID</string>
 	<key>STORAGE_BUCKET</key>
-	<string>psycho-bubbles.appspot.com</string>
+	<string>YOUR_STORAGE_BUCKET</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:687552746508:ios:a9b1b07ec270e491e20a29</string>
+	<string>YOUR_GOOGLE_APP_ID</string>
 	<key>DATABASE_URL</key>
-	<string>https://psycho-bubbles-default-rtdb.firebaseio.com</string>
+	<string>YOUR_DATABASE_URL</string>
 </dict>
 </plist>
