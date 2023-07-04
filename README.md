@@ -27,10 +27,14 @@ That's all you need for Photon.
 
 ### Firebase Configuration
 
+The Assets folder contains the 'GoogleService-Info.plist' file. Create your own Firestore Database in Firebase. If you want, change the 'GoogleService-Info.plist' file completely or write your own database information in the relevant places.
+
+![firebase](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/cc294936-1f2c-48d8-b684-e0a2999a5c6a)
+
+Please replace the "YOUR_CLIENT_ID", "YOUR_REVERSED_CLIENT_ID", "YOUR_API_KEY", "YOUR_GCM_SENDER_ID", "YOUR_PROJECT_ID", "YOUR_STORAGE_BUCKET", "YOUR_GOOGLE_APP_ID" with your own placeholder's actual placeholder data such as "YOUR_GOOGLE_APP_ID" and "YOUR_DATA" placeholder of your project. This way, you're updating the file and keeping your confidential database credentials.
 
 ## Usage
 
-First, download the repository and open it in Unity. Then you need App IP PUN and App IP Chat keys by opening a photon account.
 
 ## Contributing
 
