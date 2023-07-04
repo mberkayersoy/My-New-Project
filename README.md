@@ -1,5 +1,17 @@
 # Psycho Bubbles
+
+## Contents
+
+- [Project Description](#project-description)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 If you played a lot of web games like me when you were little, you will remember the bubble trouble game. You know, a 2D game where you manage the devil character and destroy them by hitting the balls. Psycho Bubbles is exactly such a game, but with 3D and multiplayer :)
+
+## Project Description
+
+I developed Psycho Bubbles as my graduation project. The game is played in 3D FPS style. This is not a finished game project, but if you want to make a multiplayer game, you can customize it as you wish, making it the skeleton of your project or you can use it directly.
 
 ![login](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/190d2828-3ebb-4704-add5-de6a773fa426)
 ![register](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/75df4619-87da-4ccf-bda6-fdd6d2d77497)
@@ -10,19 +22,6 @@ If you played a lot of web games like me when you were little, you will remember
 ![abilities](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/33640a6e-28e6-498d-ba77-51d56de8fafb)
 ![jumped](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/1b6d2755-caa8-4709-a374-27208d4f2f8f)
 
-
-
-## Contents
-
-- [Project Description](#project-description)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Project Description
-
-I developed Psycho Bubbles as my graduation project. The game is played in 3D FPS style. This is not a finished game project, but if you want to make a multiplayer game, you can customize it as you wish, making it the skeleton of your project or you can use it directly.
 
 ## Installation
 
