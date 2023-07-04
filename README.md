@@ -16,7 +16,6 @@ I developed Psycho Bubbles as my graduation project. The game is played in 3D FP
 ![login](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/190d2828-3ebb-4704-add5-de6a773fa426)
 ![register](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/75df4619-87da-4ccf-bda6-fdd6d2d77497)
 ![requestt](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/1235fb99-d59f-497f-a043-136cb0b111fd)
-(https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/63ba3682-690a-435e-96b2-7687b92ee289)
 ![privchat](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/77ceeb05-3093-47a5-a99a-8ad22f65ffac)
 ![firebasechat](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/59b44b2c-7069-4e0f-ae49-86939e749206)
 ![insideroom](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/026f6dc0-5e0a-459f-ba82-613e7f206473)
