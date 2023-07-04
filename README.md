@@ -22,6 +22,7 @@ First, download the repository and open it in Unity. Then create your own App Id
 ![photonweb](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/b05166a6-3123-4f11-8939-6b8053a73506)
 Then use the keys you created in Unity.
 ![photonıDs](https://github.com/mberkayersoy/Psycho_Bubbles/assets/76611569/591b361d-3858-46e7-b4e0-257c59419ceb)
+
 That's all you need for Photon.
 
 ### Firebase Configuration
