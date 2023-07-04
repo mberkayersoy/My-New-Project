@@ -108,111 +108,18 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
-    //private void Awake()
-    //{
-    //    if (Instance == null)
-    //    {
-    //        Instance = this;
-    //    }
-    //    else if (Instance != this)
-    //    {
-    //        Destroy(this.gameObject);
-    //        Instance = this;
-    //    }
-
-    //    if (!Application.isEditor)
-    //    {
-    //        ClearOutputs();
-    //        if (auth != null)
-    //        {
-    //            auth.SignOut();
-    //            Debug.Log("Sign out!");
-    //        }
-    //    }
-
-
-    //    ClearOutputs();
-    //    if (auth != null)
-    //    {
-    //        auth.SignOut();
-    //        Debug.Log("Sign out!");
-    //    }
-
-    //    FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(checkDependancyTask =>
-    //    {
-    //        var dependencyStatus = checkDependancyTask.Result;
-
-    //        if (dependencyStatus == DependencyStatus.Available)
-    //        {
-
-    //            InitializeFirebase();
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
-    //        }
-    //    });
-
-    //}
-
-    //void OnDestroy()
-    //{
-    //    if (auth != null)
-    //    {
-    //        auth.StateChanged -= AuthStateChanged;
-    //        auth.SignOut();
-    //        auth = null;
-    //    }
-
-    //    if (user != null)
-    //        user.DeleteAsync();
-    //}
-    //private void InitializeFirebase()
-    //{
-    //    auth = FirebaseAuth.DefaultInstance;
-    //    auth.StateChanged += AuthStateChanged;
-    //    AuthStateChanged(this, null);
-
-    //    firestore = FirebaseFirestore.DefaultInstance;
-    //}
-
-    //private void AuthStateChanged(object sender, EventArgs eventArgs)
-    //{
-    //    if (auth.CurrentUser != user)
-    //    {
-    //        bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
-    //        if (!signedIn && user != null)
-    //        {
-    //            Debug.Log("Signed out");
-    //        }
-
-    //        user = auth.CurrentUser;
-
-    //        if (signedIn)
-    //        {
-
-    //            Debug.Log($"Signed In: {user.DisplayName}");
-    //        }
-
-    //    }
-    //}
 
     public void ListenDocs()
     {
-        //Debug.Log("enter listendocs");
         DocumentReference docRef = firestore.Collection("users").Document(auth.CurrentUser.UserId);
         docRef.Listen((snapshot =>
         {
-            //Debug.Log("listener enter");
             if (snapshot != null && snapshot.Exists)
             {
-                //Debug.Log("birinci if");
                 var data = snapshot.ToDictionary();
                 PlayerData playerData = GetComponent<PlayerData>();
-                // "friendList" alanýndaki güncellemeleri kontrol et
                 if (data.ContainsKey("friendList"))
                 {
-                    //Debug.Log("data.ContainsKey() if");
                     var friendList = data["friendList"] as List<object>;
 
                     List<object> friendListData = friendList;
@@ -229,12 +136,8 @@ public class FirebaseManager : MonoBehaviour
                         playerData.SetFriendList(stringFriendList);
                     }
 
-                    // Friend List güncellendiðinde buraya girer
-                    //Debug.Log("Friend List updated: " + friendList.Count + " friends");
-                    // Friend List güncellendikten sonra yapýlmasý gereken iþlemleri buraya ekleyebilirsiniz
                 }
 
-                // "requestList" alanýndaki güncellemeleri kontrol et
                 if (data.ContainsKey("requestList"))
                 {
                     var requestList = data["requestList"] as List<object>;
@@ -253,9 +156,6 @@ public class FirebaseManager : MonoBehaviour
                         playerData.SetRequestList(stringRequestList);
                     }
 
-                    // Request List güncellendiðinde buraya girer
-                    // Debug.Log("Request List updated: " + requestList.Count + " requests");
-                    // Request List güncellendikten sonra yapýlmasý gereken iþlemleri buraya ekleyebilirsiniz
                 }
             }
             else
@@ -298,9 +198,6 @@ public class FirebaseManager : MonoBehaviour
                         //playerData.SetFriendList(stringMessages);
                     }
 
-                    // Friend List güncellendiðinde buraya girer
-                    //Debug.Log("Friend List updated: " + friendList.Count + " friends");
-                    // Friend List güncellendikten sonra yapýlmasý gereken iþlemleri buraya ekleyebilirsiniz
                 }
                 else
                 {
@@ -313,8 +210,6 @@ public class FirebaseManager : MonoBehaviour
             }
         }));
     }
-
-
 
     public void ClearOutputs()
     {
@@ -376,7 +271,7 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
-    // Login yapan kullanýcýnýn bütün bilgileri firebase'den çekip PlayerData sýnýfýnda tutuyorum.
+    // Get the loged users data from Firebase and Keep the data in PlayerData class.
     private async void GetDatasFromFirestore(string userEmail)
     {
         var querySnapshot = await firestore.Collection("users")
@@ -390,14 +285,13 @@ public class FirebaseManager : MonoBehaviour
                 var data = document.ToDictionary();
                 if (data.ContainsKey("username"))
                 {
-                    // FirebaseManager'a playerData compenenti ekleyelim.
+                    // add PlayerData component to The FirebaseManager Gameobject.
                     PlayerData playerData = gameObject.AddComponent<PlayerData>();
 
                     // Firebase'de olan her þeyi çekelim.
                     string username = data["username"].ToString();
-                    string experience = data["experience"].ToString(); //ekranda göstermek için stringe çevirdim.
-                    string winCount = data["winCount"].ToString(); //ekranda göstermek için stringe çevirdim
-                    //int playerStatus = int.Parse(data["playerStatus"].ToString());
+                    string experience = data["experience"].ToString(); // for info panel
+                    string winCount = data["winCount"].ToString(); // for info panel
 
                     playerData.SetUsername(username);
                     playerData.SetExperience(int.Parse(experience));
@@ -408,7 +302,6 @@ public class FirebaseManager : MonoBehaviour
                     List<object> requestListData = data["requestList"] as List<object>;
                     List<string> stringRequestList;
 
-                    // Firebase'den çekilen her þeyi PlayerData'ya yazalým.
                     if (requestListData != null)
                     {
                         stringRequestList = requestListData.Cast<string>().ToList();
@@ -423,7 +316,6 @@ public class FirebaseManager : MonoBehaviour
                     List<object> friendListData = data["friendList"] as List<object>;
                     List<string> stringFriendList;
 
-                    // Firebase'den çekilen her þeyi PlayerData'ya yazalým.
                     if (friendListData != null)
                     {
                         stringFriendList = friendListData.Cast<string>().ToList();
@@ -461,7 +353,7 @@ public class FirebaseManager : MonoBehaviour
             yield break;
         }
 
-        // Kullanýcý adýnýn kullanýmda olup olmadýðýný kontrol et
+        // check that's username available
         var checkUsernameTask = firestore.Collection("users")
             .WhereEqualTo("username", _username)
             .GetSnapshotAsync();
@@ -498,7 +390,6 @@ public class FirebaseManager : MonoBehaviour
         }
         else
         {
-            // Firestore'da kullanýcý bilgilerini kaydet
             var newUser = new Dictionary<string, object>
         {
             { "username", _username },
@@ -509,7 +400,7 @@ public class FirebaseManager : MonoBehaviour
             { "playerStatus", 0 },
             { "friendList", new List<string>()},
             { "requestList", new List<string>()},
-            // Diðer kullanýcý bilgilerini burada ekleyebilirsiniz
+            // ...
         };
 
             var saveUserTask = firestore.Collection("users").Document(auth.CurrentUser.UserId).SetAsync(newUser);
@@ -532,21 +423,18 @@ public class FirebaseManager : MonoBehaviour
 
     public void UpdatePlayerExperience()
     {
-        // PlayerData sýnýfýndan verileri al
         PlayerData playerData = GetComponent<PlayerData>();
         string username = playerData.GetUsername();
         int experience = playerData.GetExperience();
-        // Diðer verileri al
+        // ...
 
-        // Firestore üzerindeki belgeyi güncellemek için bir dictionary oluþtur
         Dictionary<string, object> updatedData = new Dictionary<string, object>
         {
             { "username", username },
             { "experience", experience },
-            // Diðer verileri ekle
+            // ...
         };
 
-        // Güncelleme iþlemini gerçekleþtir
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         db.Collection("users").Document(auth.CurrentUser.UserId).UpdateAsync(updatedData)
             .ContinueWithOnMainThread(task =>
@@ -565,21 +453,18 @@ public class FirebaseManager : MonoBehaviour
 
     public void UpdatePlayerStatus()
     {
-        // PlayerData sýnýfýndan verileri al
         PlayerData playerData = GetComponent<PlayerData>();
         string username = playerData.GetUsername();
         int playerStatus = (int)playerData.GetPlayerStatus();
-        // Diðer verileri al
+        // ...
 
-        // Firestore üzerindeki belgeyi güncellemek için bir dictionary oluþtur
         Dictionary<string, object> updatedData = new Dictionary<string, object>
         {
             { "username", username },
             { "playerStatus", playerStatus },
-            // Diðer verileri ekle
+            //...
         };
 
-        // Güncelleme iþlemini gerçekleþtir
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         db.Collection("users").Document(auth.CurrentUser.UserId).UpdateAsync(updatedData)
             .ContinueWithOnMainThread(task =>
@@ -602,17 +487,17 @@ public class FirebaseManager : MonoBehaviour
         PlayerData playerData = GetComponent<PlayerData>();
         string username = playerData.GetUsername();
         int winCount = playerData.GetWinCount();
-        // Diðer verileri al
+        //  You can get whatever you want
 
-        // Firestore üzerindeki belgeyi güncellemek için bir dictionary oluþtur
+        //create dictionary to update firestore
         Dictionary<string, object> updatedData = new Dictionary<string, object>
         {
             { "username", username },
             { "winCount", winCount },
-            // Diðer verileri ekle
+            // You can add whatever you want
         };
 
-        // Güncelleme iþlemini gerçekleþtir
+        // Update data
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         db.Collection("users").Document(auth.CurrentUser.UserId).UpdateAsync(updatedData)
             .ContinueWithOnMainThread(task =>
@@ -631,7 +516,6 @@ public class FirebaseManager : MonoBehaviour
 
     public async void SendRequest(string receiver)
     {
-        // PlayerData sýnýfýndan gerekli verileri al
         PlayerData playerData = GetComponent<PlayerData>();
         string sender = playerData.GetUsername();
         List<string> senderFriendList = playerData.GetFriendList();
@@ -682,7 +566,7 @@ public class FirebaseManager : MonoBehaviour
 
                     await document.Reference.UpdateAsync("requestList", receiverRequestList);
 
-                    // Ýstek gönderildi mesajýný göster
+                    // Show feedback
                     NetworkUIManager.Instance.ShowFeedBackText("Request sent to " + receiver);
                     NetworkUIManager.Instance.newfriendUsernameInput.text = "";
                 }
@@ -700,7 +584,6 @@ public class FirebaseManager : MonoBehaviour
         PlayerData playerData = GetComponent<PlayerData>();
         string receiverUsername = playerData.GetUsername();
 
-        // Request'in kabul edildiði tarafýn bilgilerini al
         var acceptingUserQuery = await firestore.Collection("users").WhereEqualTo("username", receiverUsername).GetSnapshotAsync();
         var acceptingUserDocument = acceptingUserQuery.Documents.FirstOrDefault();
 
@@ -720,9 +603,7 @@ public class FirebaseManager : MonoBehaviour
                 stringAcceptingUserRequestList = new List<string>();
             }
 
-            // Request'in kabul edildiði tarafýn requestList'inden ilgili requesti kaldýr
             stringAcceptingUserRequestList.Remove(senderUsername);
-            //playerData.RemoveRequest(senderUsername);
 
             List<object> friendListData = acceptingUserData["friendList"] as List<object>;
             List<string> stringAcceptingUserFriendList;
@@ -736,18 +617,14 @@ public class FirebaseManager : MonoBehaviour
                 stringAcceptingUserFriendList = new List<string>();
             }
 
-            // Kabul eden kullanýcýnýn friendList'ine request atan kiþiyi ekle
             stringAcceptingUserFriendList.Add(senderUsername);
-            //playerData.AddFriend(senderUsername);
 
-            // Firebase Firestore'da güncelleme iþlemini yap
             await acceptingUserDocument.Reference.UpdateAsync(new Dictionary<string, object>
             {
                 { "requestList", stringAcceptingUserRequestList },
                 { "friendList", stringAcceptingUserFriendList }
             });
 
-            // Request atan kullanýcýnýn bilgilerini al
             var requestSenderQuery = await firestore.Collection("users").WhereEqualTo("username", senderUsername).GetSnapshotAsync();
             var requestSenderDocument = requestSenderQuery.Documents.FirstOrDefault();
 
@@ -767,20 +644,19 @@ public class FirebaseManager : MonoBehaviour
                     stringaSenderUserFriendList = new List<string>();
                 }
 
-                // Request atan kullanýcýnýn friendList'ine kabul eden kullanýcýyý ekle
                 stringaSenderUserFriendList.Add(receiverUsername);
 
-                // Firebase Firestore'da güncelleme iþlemini yap
+                // update firestore
                 await requestSenderDocument.Reference.UpdateAsync(new Dictionary<string, object>
                 {
                     { "friendList", stringaSenderUserFriendList }
                 });
             }
 
-            // Arkadaþlýk isteði kabul edildiðinde chat belgesini oluþtur
+            // create chatid when friends request accepted
             string chatId = CreateChatID(senderUsername, receiverUsername);
 
-            // Chat belgesini Firestore'a ekle
+            // add chat doc to Firestore
             await firestore.Collection("chat").Document(chatId).SetAsync(new Dictionary<string, object>
             {
                 { "participants", new List<string> { senderUsername, receiverUsername } },
@@ -803,26 +679,25 @@ public class FirebaseManager : MonoBehaviour
 
     public async void UpdateChatAsync(string senderUsername, string receiverUsername, string newMessage)
     {
-        // Mesaj gönderildiðinde chat belgesini güncelle
-        string chatId = senderUsername + receiverUsername; // Chat kimliði
-        string chatId1 = receiverUsername + senderUsername; // Chat kimliði
+        // Update chat doc when message send
+        string chatId = senderUsername + receiverUsername; // Chat id
+        string chatId1 = receiverUsername + senderUsername; // Chat id
 
-        // Firestore'dan chat belgesini al
+        // get chat doc from firestore
         var chatDocument = await firestore.Collection("chat").Document(chatId).GetSnapshotAsync();
         var chatDocument1 = await firestore.Collection("chat").Document(chatId1).GetSnapshotAsync();
 
         if (chatDocument.Exists)
         {
-            // Chat belgesini bir sözlüðe dönüþtür
+            // convert chat doc to a dictionary
             var chatData = chatDocument.ToDictionary();
 
-            // Mevcut mesaj listesini al
+            // get current message list
             List<object> messagesData = chatData["messages"] as List<object>;
             List<string> stringMessagesData;
 
             if (messagesData != null)
             {
-                // Mesaj listesini string listesine dönüþtür
                 stringMessagesData = messagesData.Cast<string>().ToList();
             }
             else
@@ -830,10 +705,10 @@ public class FirebaseManager : MonoBehaviour
                 stringMessagesData = new List<string>();
             }
 
-            // Yeni mesajý oluþtur
+            // create new message
             stringMessagesData.Add(newMessage);
 
-            // Mesaj listesini güncelle
+            // update message list
             await chatDocument.Reference.UpdateAsync(new Dictionary<string, object>
             {
                 { "messages", stringMessagesData }
@@ -841,16 +716,14 @@ public class FirebaseManager : MonoBehaviour
         }
         else
         {
-            // Chat belgesini bir sözlüðe dönüþtür
+            // convert chat doc to a dictionary
             var chatData = chatDocument1.ToDictionary();
 
-            // Mevcut mesaj listesini al
             List<object> messagesData = chatData["messages"] as List<object>;
             List<string> stringMessagesData;
 
             if (messagesData != null)
             {
-                // Mesaj listesini string listesine dönüþtür
                 stringMessagesData = messagesData.Cast<string>().ToList();
             }
             else
@@ -858,10 +731,8 @@ public class FirebaseManager : MonoBehaviour
                 stringMessagesData = new List<string>();
             }
 
-            // Yeni mesajý oluþtur
             stringMessagesData.Add(newMessage);
 
-            // Mesaj listesini güncelle
             await chatDocument1.Reference.UpdateAsync(new Dictionary<string, object>
             {
                 { "messages", stringMessagesData }
@@ -874,7 +745,7 @@ public class FirebaseManager : MonoBehaviour
         PlayerData playerData = GetComponent<PlayerData>();
         string receiverUsername = playerData.GetUsername();
 
-        // Request'in kabul edildiði tarafýn bilgilerini al
+        // get receiver's data
         var receiverUserQuery = await firestore.Collection("users").WhereEqualTo("username", receiverUsername).GetSnapshotAsync();
         var receiverUserDocument = receiverUserQuery.Documents.FirstOrDefault();
 
@@ -894,11 +765,11 @@ public class FirebaseManager : MonoBehaviour
                 stringReceiverUserRequestList = new List<string>();
             }
 
-            // Request'in kabul edildiði tarafýn requestList'inden ilgili requesti kaldýr
+            // remove request from receiver's request list
             stringReceiverUserRequestList.Remove(rejectingUsername);
             playerData.RemoveRequest(rejectingUsername);
 
-            // Firebase Firestore'da güncelleme iþlemini yap
+            // update Firebase Firestore
             await receiverUserDocument.Reference.UpdateAsync(new Dictionary<string, object>
             {
                 { "requestList", stringReceiverUserRequestList },
@@ -911,7 +782,7 @@ public class FirebaseManager : MonoBehaviour
         PlayerData playerData = GetComponent<PlayerData>();
         string localUsername = playerData.GetUsername();
 
-        // Arkadaþ listesinden oyuncu silen kiþinin bilgilerini al
+        // get local user data
         var localUserQuery = await firestore.Collection("users").WhereEqualTo("username", localUsername).GetSnapshotAsync();
         var localUserDocument = localUserQuery.Documents.FirstOrDefault();
 
@@ -931,17 +802,15 @@ public class FirebaseManager : MonoBehaviour
                 stringLocalUserFriendList = new List<string>();
             }
 
-            // Arkadaþ kaldýran kiþinin friendList'inden ilgili arkadaþý kaldýr
             stringLocalUserFriendList.Remove(removedFriend);
-            //playerData.RemoveFriend(removedFriend);
 
-            // Firebase Firestore'da güncelleme iþlemini yap
+            // update firestore
             await localUserDocument.Reference.UpdateAsync(new Dictionary<string, object>
             {
                 { "friendList", stringLocalUserFriendList },
             });
 
-            // Kaldýrýlan kiþinin bilgileri
+            // removed friend data
             var removedUserrQuery = await firestore.Collection("users").WhereEqualTo("username", removedFriend).GetSnapshotAsync();
             var removedUserDocument = removedUserrQuery.Documents.FirstOrDefault();
 
@@ -961,10 +830,9 @@ public class FirebaseManager : MonoBehaviour
                     stringRemovedUserFriendList = new List<string>();
                 }
 
-                // removedUser kiþisinin friendList'inden kaldýran kiþiyi sil
                 stringRemovedUserFriendList.Remove(localUsername);
 
-                // Firebase Firestore'da güncelleme iþlemi yap
+                // update firestore
                 await removedUserDocument.Reference.UpdateAsync(new Dictionary<string, object>
                 {
                     { "friendList", stringRemovedUserFriendList }
